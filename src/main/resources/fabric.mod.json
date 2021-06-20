@@ -7,16 +7,16 @@
   "authors": [
     "glisco"
   ],
-  "contact": {},
+  "contact": {
+    "issues": "https://github.com/glisco03/deathlog/issues",
+    "sources": "https://github.com/glisco03/deathlog"
+  },
   "license": "MIT",
   "icon": "assets/deathlog/icon.png",
-  "environment": "*",
+  "environment": "client",
   "entrypoints": {
     "client": [
       "com.glisco.deathlog.client.DeathLogClient"
-    ],
-    "main": [
-      "com.glisco.deathlog.DeathLog"
     ]
   },
   "mixins": [
