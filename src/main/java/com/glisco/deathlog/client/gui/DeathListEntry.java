@@ -3,14 +3,12 @@ package com.glisco.deathlog.client.gui;
 import com.glisco.deathlog.client.DeathInfo;
 import com.glisco.deathlog.client.DeathInfoProperty;
 import com.glisco.deathlog.client.DeathLogClient;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.AlwaysSelectedEntryListWidget;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
@@ -36,9 +34,9 @@ public class DeathListEntry extends AlwaysSelectedEntryListWidget.Entry<DeathLis
         textRenderer.draw(matrices, info.getListName(), x, y + 6, 0xFFFFFF);
         textRenderer.draw(matrices, info.getProperty(DeathInfoProperty.Type.DEATH_MESSAGE).orElse(DeathInfoProperty.FALLBACK).data(), x, y + 16 + 6, 0xFFFFFF);
 
-        RenderSystem.setShaderTexture(0, TRASH_CAN_TEXTURE);
+        MinecraftClient.getInstance().getTextureManager().bindTexture(TRASH_CAN_TEXTURE);
 
-        final var trashCanHovered = mouseX > x + 185 && mouseX < x + 213 && mouseY > y + 5 && mouseY < y + 35;
+        final boolean trashCanHovered = mouseX > x + 185 && mouseX < x + 213 && mouseY > y + 5 && mouseY < y + 35;
         int v = trashCanHovered ? 34 : 17;
         DrawableHelper.drawTexture(matrices, x + 190, y + 10, 0, v, 17, 17, 64, 64);
 
@@ -50,7 +48,7 @@ public class DeathListEntry extends AlwaysSelectedEntryListWidget.Entry<DeathLis
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        final var isDeleteClick = mouseX > lastRenderX + 185 && mouseX < lastRenderX + 213 && mouseY > lastRenderY + 5 && mouseY < lastRenderY + 35;
+        final boolean isDeleteClick = mouseX > lastRenderX + 185 && mouseX < lastRenderX + 213 && mouseY > lastRenderY + 5 && mouseY < lastRenderY + 35;
 
         if (isDeleteClick && Screen.hasShiftDown()) {
             DeathLogClient.deleteDeathInfo(this.info);
@@ -66,8 +64,4 @@ public class DeathListEntry extends AlwaysSelectedEntryListWidget.Entry<DeathLis
         return info;
     }
 
-    @Override
-    public Text method_37006() {
-        return Text.of("");
-    }
 }

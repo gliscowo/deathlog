@@ -7,7 +7,17 @@ import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Pair;
 
-public record DeathInfoProperty(String data) {
+public class DeathInfoProperty {
+
+    private final String data;
+
+    public DeathInfoProperty(String data)  {
+        this.data = data;
+    }
+
+    public String data(){
+        return data;
+    }
 
     public static final DeathInfoProperty FALLBACK = new DeathInfoProperty("INVALID");
     public static final ImmutableMap<Type, Pair<PropertyTypeProcessor, PropertyDataProcessor>> DISPLAY_SCHEMA;

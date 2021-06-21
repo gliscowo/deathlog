@@ -3,6 +3,7 @@ package com.glisco.deathlog.client.gui;
 import com.glisco.deathlog.client.DeathInfo;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.widget.AlwaysSelectedEntryListWidget;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 import java.util.Objects;
@@ -29,7 +30,7 @@ public class DeathListWidget extends AlwaysSelectedEntryListWidget<DeathListEntr
 
     public boolean refilter(){
         this.clearEntries();
-        if (filter.isBlank()) {
+        if (StringUtils.isBlank(filter)) {
             infos.forEach(info -> addEntry(new DeathListEntry(this, info)));
         } else {
             infos.forEach(info -> {

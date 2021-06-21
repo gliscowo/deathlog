@@ -1,10 +1,12 @@
 package com.glisco.deathlog.client;
 
+import net.fabricmc.fabric.api.util.NbtType;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
+import net.minecraft.nbt.NbtTypes;
 import net.minecraft.text.Text;
 import net.minecraft.util.collection.DefaultedList;
 
@@ -25,19 +27,19 @@ public class DeathInfo {
 
     public static DeathInfo readFromNbt(NbtCompound nbt) {
 
-        final var deathInfo = new DeathInfo();
+        final DeathInfo deathInfo = new DeathInfo();
 
-        final var armorList = nbt.getList("Armor", NbtElement.COMPOUND_TYPE);
+        final NbtList armorList = nbt.getList("Armor", NbtType.COMPOUND);
         for (int i = 0; i < armorList.size(); i++) {
             deathInfo.playerArmor.set(i, ItemStack.fromNbt(armorList.getCompound(i)));
         }
 
-        final var itemList = nbt.getList("Items", NbtElement.COMPOUND_TYPE);
+        final NbtList itemList = nbt.getList("Items", NbtType.COMPOUND);
         for (int i = 0; i < itemList.size(); i++) {
             deathInfo.playerItems.set(i, ItemStack.fromNbt(itemList.getCompound(i)));
         }
 
-        final var propertyNbt = nbt.getCompound("Properties");
+        final NbtCompound propertyNbt = nbt.getCompound("Properties");
         propertyNbt.getKeys().forEach(s -> deathInfo.setProperty(DeathInfoProperty.Type.valueOf(s), new DeathInfoProperty(propertyNbt.getString(s))));
 
         return deathInfo;
@@ -45,17 +47,17 @@ public class DeathInfo {
     }
 
     public NbtCompound writeNbt() {
-        final var nbt = new NbtCompound();
+        final NbtCompound nbt = new NbtCompound();
 
-        final var armorNbt = new NbtList();
+        final NbtList armorNbt = new NbtList();
         playerArmor.forEach(stack -> armorNbt.add(stack.writeNbt(new NbtCompound())));
         nbt.put("Armor", armorNbt);
 
-        final var inventoryNbt = new NbtList();
+        final NbtList inventoryNbt = new NbtList();
         playerItems.forEach(stack -> inventoryNbt.add(stack.writeNbt(new NbtCompound())));
         nbt.put("Items", inventoryNbt);
 
-        final var propertyNbt = new NbtCompound();
+        final NbtCompound propertyNbt = new NbtCompound();
         properties.forEach((type, deathInfoProperty) -> propertyNbt.putString(type.name(), deathInfoProperty.data()));
 
         nbt.put("Properties", propertyNbt);
@@ -90,9 +92,9 @@ public class DeathInfo {
     }
 
     public List<Text> getLeftColumnText() {
-        final var texts = new ArrayList<Text>();
+        final ArrayList<Text> texts = new ArrayList<>();
         DeathInfoProperty.DISPLAY_SCHEMA.forEach((type, propertyTypeProcessorPropertyDataProcessorPair) -> {
-            if (getProperty(type).isEmpty()) return;
+            if (!getProperty(type).isPresent()) return;
             texts.add(propertyTypeProcessorPropertyDataProcessorPair.getLeft().processType(type));
         });
 
@@ -100,10 +102,10 @@ public class DeathInfo {
     }
 
     public String createSearchString() {
-        final var builder = new StringBuilder();
+        final StringBuilder builder = new StringBuilder();
 
         for (DeathInfoProperty.Type type : DeathInfoProperty.Type.values()) {
-            if (getProperty(type).isEmpty()) continue;
+            if (!getProperty(type).isPresent()) continue;
             builder.append(getProperty(type).get().data());
         }
 
@@ -121,9 +123,9 @@ public class DeathInfo {
     }
 
     public List<Text> getRightColumnText() {
-        final var texts = new ArrayList<Text>();
+        final ArrayList<Text> texts = new ArrayList<>();
         DeathInfoProperty.DISPLAY_SCHEMA.forEach((type, propertyTypeProcessorPropertyDataProcessorPair) -> {
-            if (getProperty(type).isEmpty()) return;
+            if (!getProperty(type).isPresent()) return;
             texts.add(propertyTypeProcessorPropertyDataProcessorPair.getRight().processData(getProperty(type).get()));
         });
 

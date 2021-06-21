@@ -3,7 +3,6 @@ package com.glisco.deathlog.client.gui;
 import com.glisco.deathlog.client.DeathInfo;
 import com.glisco.deathlog.client.DeathLogClient;
 import com.glisco.deathlog.mixin.MinecraftServerAccessor;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
@@ -12,6 +11,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
+
+import java.util.List;
 
 public class DeathLogScreen extends Screen {
 
@@ -32,17 +33,17 @@ public class DeathLogScreen extends Screen {
 
         deathList = new DeathListWidget(client, 220, this.height, 32, this.height - 100, 40, DeathLogClient.getDeathInfos());
         deathList.setLeftPos(10);
-        this.addDrawableChild(deathList);
+        this.addChild(deathList);
 
-        this.addDrawableChild(new ButtonWidget(110 - 50, this.height - 32, 100, 20, Text.of("Done"), button -> {
+        this.addButton(new ButtonWidget(110 - 50, this.height - 32, 100, 20, Text.of("Done"), button -> {
             this.onClose();
         }));
 
-        final var searchField = new TextFieldWidget(textRenderer, 10, this.height - 95, 220, 20, Text.of(""));
+        final TextFieldWidget searchField = new TextFieldWidget(textRenderer, 10, this.height - 95, 220, 20, Text.of(""));
         searchField.setChangedListener(s -> {
             searchField.setEditableColor(deathList.filter(s) ? 0xFFFFFF : 0xFF2222);
         });
-        this.addDrawableChild(searchField);
+        this.addButton(searchField);
 
         if (client.getCurrentServerEntry() != null) {
             searchField.setText(client.getCurrentServerEntry().name);
@@ -60,34 +61,36 @@ public class DeathLogScreen extends Screen {
     public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
         this.renderBackgroundTexture(0);
 
-        final var originX = 230 + 30;
-        final var originY = Math.min(this.height - 40, 300);
+        this.deathList.render(matrices, mouseX, mouseY, delta);
 
-        if (deathList.getSelectedOrNull() != null) {
-            DeathInfo info = deathList.getSelectedOrNull().getInfo();
+        final int originX = 230 + 30;
+        final int originY = Math.min(this.height - 40, 300);
+
+        if (deathList.getSelected() != null) {
+            DeathInfo info = deathList.getSelected().getInfo();
             textRenderer.draw(matrices, info.getTitle(), originX, 16, 0xFFFFFF);
 
-            final var leftColumnText = info.getLeftColumnText();
+            final List<Text> leftColumnText = info.getLeftColumnText();
             for (int i = 0; i < leftColumnText.size(); i++) {
                 textRenderer.draw(matrices, leftColumnText.get(i), originX, 60 + 14 * i, 0xFFFFFF);
             }
 
-            final var rightColumnText = info.getRightColumnText();
+            final List<Text> rightColumnText = info.getRightColumnText();
             for (int i = 0; i < rightColumnText.size(); i++) {
                 textRenderer.draw(matrices, rightColumnText.get(i), originX + 100, 60 + 14 * i, 0xFFFFFF);
             }
 
-            RenderSystem.setShaderTexture(0, INVENTORY_TEXTURE);
+            client.getTextureManager().bindTexture(INVENTORY_TEXTURE);
             drawTexture(matrices, originX - 8, originY - 83, 0, 0, 210, 107);
 
             hoveredStack = null;
 
             for (int i = 0; i < info.getPlayerItems().size() - 1; i++) {
-                final var stack = info.getPlayerItems().get(i);
+                final ItemStack stack = info.getPlayerItems().get(i);
                 if (stack.isEmpty()) continue;
 
-                final var slotX = originX + 18 * (i % 9);
-                final var slotY = originY + (i < 9 ? 0 : -58 + 18 * (i / 9 - 1));
+                final int slotX = originX + 18 * (i % 9);
+                final int slotY = originY + (i < 9 ? 0 : -58 + 18 * (i / 9 - 1));
 
                 renderSlotWithPossibleTooltip(matrices, stack, slotX, slotY, mouseX, mouseY);
             }
@@ -97,17 +100,17 @@ public class DeathLogScreen extends Screen {
             }
 
             for (int i = 0; i < info.getPlayerArmor().size(); i++) {
-                final var stack = info.getPlayerArmor().get(i);
+                final ItemStack stack = info.getPlayerArmor().get(i);
                 if (stack.isEmpty()) continue;
 
-                final var slotX = originX + 178;
-                final var slotY = originY - 18 * i;
+                final int slotX = originX + 178;
+                final int slotY = originY - 18 * i;
 
                 renderSlotWithPossibleTooltip(matrices, stack, slotX, slotY, mouseX, mouseY);
             }
 
             if (hoveredStack != null) {
-                final var tooltip = getTooltipFromItem(hoveredStack);
+                final List<Text> tooltip = getTooltipFromItem(hoveredStack);
                 tooltip.add(Text.of(""));
                 tooltip.add(Text.of("§7Press Mouse 3 to " + (client.player.isCreative() ? "spawn" : "copy /give")));
                 renderTooltip(matrices, tooltip, mouseX, mouseY);
@@ -125,7 +128,7 @@ public class DeathLogScreen extends Screen {
             if (client.player.isCreative()) {
                 client.interactionManager.dropCreativeStack(hoveredStack);
             } else {
-                final var command = new StringBuilder("/give ");
+                final StringBuilder command = new StringBuilder("/give ");
                 command.append(client.player.getName().asString());
                 command.append(" ");
 
