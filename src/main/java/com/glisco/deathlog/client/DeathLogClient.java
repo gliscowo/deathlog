@@ -5,6 +5,8 @@ import com.glisco.deathlog.mixin.MinecraftServerAccessor;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
 import net.fabricmc.fabric.api.util.NbtType;
@@ -12,12 +14,14 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.StatsScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.option.KeyBinding;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.network.packet.s2c.play.CombatEventS2CPacket;
 import net.minecraft.text.Text;
+import org.lwjgl.glfw.GLFW;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,6 +34,8 @@ public class DeathLogClient implements ClientModInitializer {
 
     private static final List<DeathInfo> DEATH_INFOS = new ArrayList<>();
 
+    public static final KeyBinding OPEN_DEATH_SCREEN = new KeyBinding("key.deathlog.death_screen", GLFW.GLFW_KEY_END, "key.categories.misc");
+
     @Override
     public void onInitializeClient() {
         loadFromFile();
@@ -39,6 +45,13 @@ public class DeathLogClient implements ClientModInitializer {
             Screens.getButtons(screen).add(new ButtonWidget(10, 5, 60, 20, Text.of("DeathLog"), button -> {
                 client.openScreen(new DeathLogScreen(screen));
             }));
+        });
+
+        KeyBindingHelper.registerKeyBinding(OPEN_DEATH_SCREEN);
+        ClientTickEvents.END_CLIENT_TICK.register(minecraftClient -> {
+            if (OPEN_DEATH_SCREEN.wasPressed()) {
+                minecraftClient.openScreen(new DeathLogScreen(minecraftClient.currentScreen));
+            }
         });
 
     }
