@@ -1,7 +1,7 @@
 package com.glisco.deathlog.client.gui;
 
 import com.glisco.deathlog.client.DeathInfo;
-import com.glisco.deathlog.client.DeathLogClient;
+import com.glisco.deathlog.storage.SingletonDeathLogStorage;
 import com.glisco.deathlog.mixin.MinecraftServerAccessor;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.screen.Screen;
@@ -18,19 +18,21 @@ public class DeathLogScreen extends Screen {
     private static final Identifier INVENTORY_TEXTURE = new Identifier("deathlog", "textures/gui/inventory_overlay.png");
 
     private final Screen previousScreen;
+    private final SingletonDeathLogStorage storage;
     private DeathListWidget deathList;
 
     private ItemStack hoveredStack = null;
 
-    public DeathLogScreen(Screen previousScreen) {
+    public DeathLogScreen(Screen previousScreen, SingletonDeathLogStorage storage) {
         super(Text.of("Death Log"));
         this.previousScreen = previousScreen;
+        this.storage = storage;
     }
 
     @Override
     protected void init() {
 
-        deathList = new DeathListWidget(client, 220, this.height, 32, this.height - 100, 40, DeathLogClient.getDeathInfos());
+        deathList = new DeathListWidget(client, 220, this.height, 32, this.height - 100, 40, storage);
         deathList.setLeftPos(10);
         this.addDrawableChild(deathList);
 
@@ -38,22 +40,18 @@ public class DeathLogScreen extends Screen {
             this.onClose();
         }));
 
-        final var searchField = new TextFieldWidget(textRenderer, 10, this.height - 95, 220, 20, Text.of(""));
+        final TextFieldWidget searchField = new TextFieldWidget(textRenderer, 10, this.height - 95, 220, 20, Text.of(""));
         searchField.setChangedListener(s -> {
             searchField.setEditableColor(deathList.filter(s) ? 0xFFFFFF : 0xFF2222);
         });
         this.addDrawableChild(searchField);
 
-        if (client.getCurrentServerEntry() != null) {
-            searchField.setText(client.getCurrentServerEntry().name);
-        } else if (client.isInSingleplayer()) {
-            searchField.setText(((MinecraftServerAccessor) client.getServer()).deathlog_getSession().getDirectoryName());
-        }
+        searchField.setText(storage.getDefaultFilter());
     }
 
     @Override
     public void onClose() {
-        client.openScreen(previousScreen);
+        client.setScreen(previousScreen);
     }
 
     @Override
@@ -83,7 +81,7 @@ public class DeathLogScreen extends Screen {
             hoveredStack = null;
 
             for (int i = 0; i < info.getPlayerItems().size() - 1; i++) {
-                final var stack = info.getPlayerItems().get(i);
+                final ItemStack stack = info.getPlayerItems().get(i);
                 if (stack.isEmpty()) continue;
 
                 final var slotX = originX + 18 * (i % 9);
@@ -97,7 +95,7 @@ public class DeathLogScreen extends Screen {
             }
 
             for (int i = 0; i < info.getPlayerArmor().size(); i++) {
-                final var stack = info.getPlayerArmor().get(i);
+                final ItemStack stack = info.getPlayerArmor().get(i);
                 if (stack.isEmpty()) continue;
 
                 final var slotX = originX + 178;
@@ -116,7 +114,7 @@ public class DeathLogScreen extends Screen {
         }
         super.render(matrices, mouseX, mouseY, delta);
         textRenderer.draw(matrices, title, 16, 12, 0xFFFFFF);
-        textRenderer.draw(matrices, "Total Deaths: " + DeathLogClient.getDeathInfos().size(), 15, this.height - 60, 0xFFFFFF);
+        textRenderer.draw(matrices, "Total Deaths: " + storage.getDeathInfoList().size(), 15, this.height - 60, 0xFFFFFF);
     }
 
     @Override
@@ -130,7 +128,7 @@ public class DeathLogScreen extends Screen {
                 command.append(" ");
 
                 command.append(Registry.ITEM.getId(hoveredStack.getItem()));
-                command.append(hoveredStack.getTag().toString());
+                command.append(hoveredStack.getOrCreateNbt().toString());
 
                 client.keyboard.setClipboard(command.toString());
             }

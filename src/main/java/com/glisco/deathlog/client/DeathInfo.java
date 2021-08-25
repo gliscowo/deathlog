@@ -1,140 +1,98 @@
 package com.glisco.deathlog.client;
 
-import net.minecraft.entity.player.PlayerInventory;
+import com.glisco.deathlog.death_info.DeathInfoProperty;
+import com.glisco.deathlog.death_info.DeathInfoPropertySerializer;
+import com.glisco.deathlog.death_info.properties.InventoryProperty;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
-import net.minecraft.nbt.NbtList;
+import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.util.collection.DefaultedList;
 
 import java.util.*;
+import java.util.function.Consumer;
 
 public class DeathInfo {
 
-    //TODO move these to properties
-    private DefaultedList<ItemStack> playerItems;
-    private DefaultedList<ItemStack> playerArmor;
-    private Map<DeathInfoProperty.Type, DeathInfoProperty> properties;
+    public static final String COORDINATES_KEY = "coordinates";
+    public static final String DIMENSION_KEY = "dimension";
+    public static final String LOCATION_KEY = "location";
+    public static final String SCORE_KEY = "score";
+    public static final String DEATH_MESSAGE_KEY = "death_message";
+    public static final String TIME_OF_DEATH_KEY = "time_of_death";
+    public static final String INVENTORY_KEY = "inventory";
+
+    private final Map<String, DeathInfoProperty> properties;
 
     public DeathInfo() {
-        this.playerItems = DefaultedList.ofSize(37, ItemStack.EMPTY);
-        this.playerArmor = DefaultedList.ofSize(4, ItemStack.EMPTY);
-        this.properties = new HashMap<>();
+        this.properties = new LinkedHashMap<>();
     }
 
     public static DeathInfo readFromNbt(NbtCompound nbt) {
-
-        final var deathInfo = new DeathInfo();
-
-        final var armorList = nbt.getList("Armor", NbtElement.COMPOUND_TYPE);
-        for (int i = 0; i < armorList.size(); i++) {
-            deathInfo.playerArmor.set(i, ItemStack.fromNbt(armorList.getCompound(i)));
-        }
-
-        final var itemList = nbt.getList("Items", NbtElement.COMPOUND_TYPE);
-        for (int i = 0; i < itemList.size(); i++) {
-            deathInfo.playerItems.set(i, ItemStack.fromNbt(itemList.getCompound(i)));
-        }
-
-        final var propertyNbt = nbt.getCompound("Properties");
-        propertyNbt.getKeys().forEach(s -> deathInfo.setProperty(DeathInfoProperty.Type.valueOf(s), new DeathInfoProperty(propertyNbt.getString(s))));
-
+        final DeathInfo deathInfo = new DeathInfo();
+        nbt.getKeys().forEach(s -> deathInfo.setProperty(s, DeathInfoPropertySerializer.load(nbt.getCompound(s))));
         return deathInfo;
-
     }
 
     public NbtCompound writeNbt() {
-        final var nbt = new NbtCompound();
-
-        final var armorNbt = new NbtList();
-        playerArmor.forEach(stack -> armorNbt.add(stack.writeNbt(new NbtCompound())));
-        nbt.put("Armor", armorNbt);
-
-        final var inventoryNbt = new NbtList();
-        playerItems.forEach(stack -> inventoryNbt.add(stack.writeNbt(new NbtCompound())));
-        nbt.put("Items", inventoryNbt);
-
-        final var propertyNbt = new NbtCompound();
-        properties.forEach((type, deathInfoProperty) -> propertyNbt.putString(type.name(), deathInfoProperty.data()));
-
-        nbt.put("Properties", propertyNbt);
-
+        final NbtCompound nbt = new NbtCompound();
+        properties.forEach((s, property) -> nbt.put(s, DeathInfoPropertySerializer.save(property)));
         return nbt;
     }
 
-    public void setProperty(DeathInfoProperty.Type property, DeathInfoProperty value) {
+    public void setProperty(String property, DeathInfoProperty value) {
         this.properties.put(property, value);
     }
 
-    public Optional<DeathInfoProperty> getProperty(DeathInfoProperty.Type property) {
+    public Optional<DeathInfoProperty> getProperty(String property) {
         return Optional.ofNullable(properties.get(property));
     }
 
-    public void loadItems(PlayerInventory playerInventory) {
-        for (int i = 0; i < playerArmor.size(); i++) {
-            playerArmor.set(i, playerInventory.armor.get(i).copy());
-        }
-        for (int i = 0; i < 36; i++) {
-            playerItems.set(i, playerInventory.main.get(i).copy());
-        }
-        playerItems.set(36, playerInventory.offHand.get(0));
-    }
-
     public Text getListName() {
-        return Text.of(getProperty(DeathInfoProperty.Type.TIME_OF_DEATH).orElse(new DeathInfoProperty("TIME_MISSING")).data());
+        DeathInfoProperty property = getProperty(TIME_OF_DEATH_KEY).orElse(null);
+        return property == null ? new LiteralText("Time missing") : property.formatted();
     }
 
     public Text getTitle() {
-        return Text.of(getProperty(DeathInfoProperty.Type.DEATH_MESSAGE).orElse(DeathInfoProperty.FALLBACK).data());
+        DeathInfoProperty property = getProperty(DEATH_MESSAGE_KEY).orElse(null);
+        return property == null ? new LiteralText("Death message missing") : property.formatted();
     }
 
     public List<Text> getLeftColumnText() {
         final var texts = new ArrayList<Text>();
-        DeathInfoProperty.DISPLAY_SCHEMA.forEach((type, propertyTypeProcessorPropertyDataProcessorPair) -> {
-            if (getProperty(type).isEmpty()) return;
-            texts.add(propertyTypeProcessorPropertyDataProcessorPair.getLeft().processType(type));
-        });
-
+        iterateDisplayProperties(property -> texts.add(property.getName()));
         return texts;
-    }
-
-    public String createSearchString() {
-        final var builder = new StringBuilder();
-
-        for (DeathInfoProperty.Type type : DeathInfoProperty.Type.values()) {
-            if (getProperty(type).isEmpty()) continue;
-            builder.append(getProperty(type).get().data());
-        }
-
-        for (ItemStack stack : playerItems) {
-            if (stack.isEmpty()) continue;
-            builder.append(stack.getName().getString());
-        }
-
-        for (ItemStack stack : playerArmor) {
-            if (stack.isEmpty()) continue;
-            builder.append(stack.getName().getString());
-        }
-
-        return builder.toString().toLowerCase();
     }
 
     public List<Text> getRightColumnText() {
         final var texts = new ArrayList<Text>();
-        DeathInfoProperty.DISPLAY_SCHEMA.forEach((type, propertyTypeProcessorPropertyDataProcessorPair) -> {
-            if (getProperty(type).isEmpty()) return;
-            texts.add(propertyTypeProcessorPropertyDataProcessorPair.getRight().processData(getProperty(type).get()));
-        });
-
+        iterateDisplayProperties(property -> texts.add(property.formatted()));
         return texts;
     }
 
+    public String createSearchString() {
+        final StringBuilder builder = new StringBuilder();
+        properties.forEach((s, property) -> builder.append(property.toSearchableString()));
+        return builder.toString().toLowerCase();
+    }
+
+    private void iterateDisplayProperties(Consumer<DeathInfoProperty> callback) {
+        properties.forEach((s, property) -> {
+            if (!property.getType().displayedInInfoView()) return;
+
+            callback.accept(property);
+        });
+    }
+
     public DefaultedList<ItemStack> getPlayerArmor() {
-        return playerArmor;
+        var propertyOptional = getProperty(INVENTORY_KEY);
+        if (propertyOptional.isEmpty()) return DefaultedList.of();
+        return ((InventoryProperty) propertyOptional.get()).getPlayerArmor();
     }
 
     public DefaultedList<ItemStack> getPlayerItems() {
-        return playerItems;
+        var propertyOptional = getProperty(INVENTORY_KEY);
+        if (propertyOptional.isEmpty()) return DefaultedList.of();
+        return ((InventoryProperty) propertyOptional.get()).getPlayerItems();
     }
 }

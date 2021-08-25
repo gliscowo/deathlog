@@ -13,19 +13,22 @@
   },
   "license": "MIT",
   "icon": "assets/deathlog/icon.png",
-  "environment": "client",
+  "environment": "*",
   "entrypoints": {
     "client": [
       "com.glisco.deathlog.client.DeathLogClient"
+    ],
+    "server": [
+      "com.glisco.deathlog.server.DeathLogServer"
     ]
   },
   "mixins": [
     "deathlog.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=0.11.6",
+    "fabricloader": "*",
     "fabric": "*",
-    "minecraft": "1.17"
+    "minecraft": ">=1.17"
   },
   "custom": {
     "modmenu": {
