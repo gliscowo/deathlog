@@ -2,6 +2,7 @@ package com.glisco.deathlog.death_info;
 
 import com.glisco.deathlog.death_info.properties.*;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.util.Pair;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -18,16 +19,18 @@ public class DeathInfoPropertySerializer {
         TYPES.put("string", StringProperty.Type.INSTANCE);
     }
 
-    public static NbtCompound save(DeathInfoProperty property) {
+    public static NbtCompound save(DeathInfoProperty property, String identifier) {
         NbtCompound nbt = new NbtCompound();
         nbt.putString("Type", property.getType().getId());
+        nbt.putString("Identifier", identifier);
         property.writeNbt(nbt);
         return nbt;
     }
 
-    public static DeathInfoProperty load(NbtCompound propertyNbt) {
+    public static Pair<DeathInfoProperty, String> load(NbtCompound propertyNbt) {
         String type = propertyNbt.getString("Type");
-        return TYPES.get(type).readFromNbt(propertyNbt);
+        String identifier = propertyNbt.getString("Identifier");
+        return new Pair<>(TYPES.get(type).readFromNbt(propertyNbt), identifier);
     }
 
 }

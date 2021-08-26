@@ -39,12 +39,12 @@ public class ServerDeathLogStorage extends BaseDeathLogStorage {
                 UUID uuid;
 
                 try {
-                    uuid = UUID.fromString(FilenameUtils.removeExtension(path.toString()));
+                    uuid = UUID.fromString(FilenameUtils.getBaseName(path.toString()));
                 } catch (IllegalArgumentException e) {
                     raiseError("Invalid filename");
 
                     e.printStackTrace();
-                    LOGGER.error("Failed to parse UUID from filename, further disk operations have been disabled");
+                    LOGGER.error("Failed to parse UUID from filename '{}', further disk operations have been disabled", FilenameUtils.removeExtension(path.toString()));
                     return;
                 }
 
@@ -77,14 +77,12 @@ public class ServerDeathLogStorage extends BaseDeathLogStorage {
 
         deathInfo.setProperty(DeathInfo.INVENTORY_KEY, new InventoryProperty(player.getInventory()));
 
+        deathInfo.setProperty(DeathInfo.COORDINATES_KEY, new CoordinatesProperty(player.getBlockPos()));
+        deathInfo.setProperty(DeathInfo.DIMENSION_KEY, new StringProperty("deathlog.deathinfoproperty.dimension", player.world.getRegistryKey().getValue().toString()));
+        deathInfo.setProperty(DeathInfo.LOCATION_KEY, new LocationProperty("Server", true));
         deathInfo.setProperty(DeathInfo.SCORE_KEY, new ScoreProperty(player.getScore(), player.experienceLevel, player.totalExperience));
         deathInfo.setProperty(DeathInfo.DEATH_MESSAGE_KEY, new StringProperty("deathlog.deathinfoproperty.death_message", deathMessage.getString()));
-        deathInfo.setProperty(DeathInfo.COORDINATES_KEY, new CoordinatesProperty(player.getBlockPos()));
-
-        deathInfo.setProperty(DeathInfo.LOCATION_KEY, new LocationProperty("Server", true));
-
         deathInfo.setProperty(DeathInfo.TIME_OF_DEATH_KEY, new StringProperty("deathlog.deathinfoproperty.time_of_death", new Date().toString()));
-        deathInfo.setProperty(DeathInfo.DIMENSION_KEY, new StringProperty("deathlog.deathinfoproperty.dimension", player.world.getRegistryKey().getValue().toString()));
 
         deathInfos.computeIfAbsent(player.getUuid(), uuid -> new ArrayList<>()).add(deathInfo);
         save(deathLogDir.resolve(player.getUuid().toString() + ".dat").toFile(), deathInfos.get(player.getUuid()));

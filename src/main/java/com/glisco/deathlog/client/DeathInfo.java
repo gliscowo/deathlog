@@ -5,6 +5,9 @@ import com.glisco.deathlog.death_info.DeathInfoPropertySerializer;
 import com.glisco.deathlog.death_info.properties.InventoryProperty;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
+import net.minecraft.nbt.NbtList;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.util.collection.DefaultedList;
@@ -28,16 +31,29 @@ public class DeathInfo {
         this.properties = new LinkedHashMap<>();
     }
 
-    public static DeathInfo readFromNbt(NbtCompound nbt) {
+    public static DeathInfo readFromNbt(NbtList nbt) {
         final DeathInfo deathInfo = new DeathInfo();
-        nbt.getKeys().forEach(s -> deathInfo.setProperty(s, DeathInfoPropertySerializer.load(nbt.getCompound(s))));
+        nbt.forEach(element -> {
+            final var parsed = DeathInfoPropertySerializer.load((NbtCompound) element);
+            deathInfo.setProperty(parsed.getRight(), parsed.getLeft());
+        });
         return deathInfo;
     }
 
-    public NbtCompound writeNbt() {
-        final NbtCompound nbt = new NbtCompound();
-        properties.forEach((s, property) -> nbt.put(s, DeathInfoPropertySerializer.save(property)));
+    public NbtList writeNbt() {
+        final NbtList nbt = new NbtList();
+        properties.forEach((s, property) -> nbt.add(DeathInfoPropertySerializer.save(property, s)));
         return nbt;
+    }
+
+    public static DeathInfo read(PacketByteBuf buffer) {
+        return readFromNbt(buffer.readNbt().getList("DeathInfo", NbtElement.COMPOUND_TYPE));
+    }
+
+    public void write(PacketByteBuf buffer) {
+        final var nbt = new NbtCompound();
+        nbt.put("DeathInfo", writeNbt());
+        buffer.writeNbt(nbt);
     }
 
     public void setProperty(String property, DeathInfoProperty value) {

@@ -50,9 +50,9 @@ public abstract class BaseDeathLogStorage implements DeathLogStorage {
         }
 
         into.clear();
-        final NbtList infoList = deathNbt.getList("Deaths", NbtElement.COMPOUND_TYPE);
+        final NbtList infoList = deathNbt.getList("Deaths", NbtElement.LIST_TYPE);
         for (int i = 0; i < infoList.size(); i++) {
-            into.add(DeathInfo.readFromNbt(infoList.getCompound(i)));
+            into.add(DeathInfo.readFromNbt(infoList.getList(i)));
         }
     }
 

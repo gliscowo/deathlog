@@ -3,6 +3,7 @@ package com.glisco.deathlog.client;
 import com.glisco.deathlog.client.gui.DeathLogScreen;
 import com.glisco.deathlog.network.DeathLogPackets;
 import com.glisco.deathlog.storage.SingletonDeathLogStorage;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;

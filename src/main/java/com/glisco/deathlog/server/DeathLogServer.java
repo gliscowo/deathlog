@@ -49,12 +49,12 @@ public class DeathLogServer implements DedicatedServerModInitializer {
                 var profileArgument = GameProfileArgumentType.getProfileArgument(context, "player");
                 var profile = profileArgument.iterator().next();
 
-                final var infos = DeathLogServer.getStorage().getDeathInfoList(profile.getId());
-                DeathLogPackets.Server.openScreen(infos, context.getSource().getPlayer());
+                DeathLogPackets.Server.openScreen(profile.getId(), context.getSource().getPlayer());
                 return 0;
             }))));
-
         });
+
+        DeathLogPackets.Server.registerListeners();
     }
 
     private static RequiredArgumentBuilder<ServerCommandSource, GameProfileArgumentType.GameProfileArgument> createProfileArgument() {
