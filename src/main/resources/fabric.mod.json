@@ -15,6 +15,9 @@
   "icon": "assets/deathlog/icon.png",
   "environment": "*",
   "entrypoints": {
+    "main": [
+      "com.glisco.deathlog.DeathLogCommon"
+    ],
     "client": [
       "com.glisco.deathlog.client.DeathLogClient"
     ],

@@ -19,6 +19,10 @@ public class DeathInfoPropertySerializer {
         TYPES.put("string", StringProperty.Type.INSTANCE);
     }
 
+    public static void register(String id, DeathInfoPropertyType<?> type){
+        TYPES.put(id, type);
+    }
+
     public static NbtCompound save(DeathInfoProperty property, String identifier) {
         NbtCompound nbt = new NbtCompound();
         nbt.putString("Type", property.getType().getId());

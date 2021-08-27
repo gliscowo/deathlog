@@ -1,11 +1,14 @@
 package com.glisco.deathlog.server;
 
 import com.glisco.deathlog.client.DeathInfo;
+import com.glisco.deathlog.death_info.SpecialPropertyProvider;
+import com.glisco.deathlog.death_info.properties.TrinketComponentProperty;
 import com.glisco.deathlog.network.DeathLogPackets;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import net.fabricmc.api.DedicatedServerModInitializer;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.argument.GameProfileArgumentType;
 import net.minecraft.server.PlayerManager;

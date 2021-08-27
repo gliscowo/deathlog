@@ -1,6 +1,7 @@
 package com.glisco.deathlog.server;
 
 import com.glisco.deathlog.client.DeathInfo;
+import com.glisco.deathlog.death_info.SpecialPropertyProvider;
 import com.glisco.deathlog.death_info.properties.*;
 import com.glisco.deathlog.storage.BaseDeathLogStorage;
 import net.fabricmc.loader.api.FabricLoader;
@@ -83,6 +84,8 @@ public class ServerDeathLogStorage extends BaseDeathLogStorage {
         deathInfo.setProperty(DeathInfo.SCORE_KEY, new ScoreProperty(player.getScore(), player.experienceLevel, player.experienceProgress, player.totalExperience));
         deathInfo.setProperty(DeathInfo.DEATH_MESSAGE_KEY, new StringProperty("deathlog.deathinfoproperty.death_message", deathMessage.getString()));
         deathInfo.setProperty(DeathInfo.TIME_OF_DEATH_KEY, new StringProperty("deathlog.deathinfoproperty.time_of_death", new Date().toString()));
+
+        SpecialPropertyProvider.apply(deathInfo, player);
 
         deathInfos.computeIfAbsent(player.getUuid(), uuid -> new ArrayList<>()).add(deathInfo);
         save(deathLogDir.resolve(player.getUuid().toString() + ".dat").toFile(), deathInfos.get(player.getUuid()));
