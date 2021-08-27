@@ -1,14 +1,14 @@
 package com.glisco.deathlog.server;
 
 import com.glisco.deathlog.client.DeathInfo;
-import com.glisco.deathlog.death_info.SpecialPropertyProvider;
-import com.glisco.deathlog.death_info.properties.TrinketComponentProperty;
 import com.glisco.deathlog.network.DeathLogPackets;
+import com.mojang.authlib.GameProfile;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.fabricmc.api.DedicatedServerModInitializer;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.argument.GameProfileArgumentType;
 import net.minecraft.server.PlayerManager;
@@ -29,13 +29,11 @@ public class DeathLogServer implements DedicatedServerModInitializer {
 
         CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> {
             dispatcher.register(literal("deathlog").then(literal("list").then(createProfileArgument().executes(context -> {
-                var profileArgument = GameProfileArgumentType.getProfileArgument(context, "player");
-                var profile = profileArgument.iterator().next();
+                var profile = getProfile(context);
 
                 final var deathInfoList = DeathLogServer.getStorage().getDeathInfoList(profile.getId());
                 final var infoListSize = deathInfoList.size();
                 for (DeathInfo deathInfo : deathInfoList) {
-
                     var leftText = deathInfo.getLeftColumnText().iterator();
                     var rightText = deathInfo.getRightColumnText().iterator();
 
@@ -50,24 +48,31 @@ public class DeathLogServer implements DedicatedServerModInitializer {
 
                 return infoListSize;
             }))).then(literal("view").then(createProfileArgument().executes(context -> {
-                var profileArgument = GameProfileArgumentType.getProfileArgument(context, "player");
-                var profile = profileArgument.iterator().next();
-
-                DeathLogPackets.Server.openScreen(profile.getId(), context.getSource().getPlayer());
+                DeathLogPackets.Server.openScreen(getProfile(context).getId(), context.getSource().getPlayer());
                 return 0;
             }))).then(literal("restore").then(createProfileArgument().then(argument("index", IntegerArgumentType.integer()).executes(context -> {
                 int index = IntegerArgumentType.getInteger(context, "index");
-
-                var profileArgument = GameProfileArgumentType.getProfileArgument(context, "player");
-                var profile = profileArgument.iterator().next();
-
-                DeathLogServer.getStorage().getDeathInfoList(profile.getId()).get(index).restore(context.getSource().getPlayer());
-
-                return 0;
-            })))));
+                return executeRestore(context, index);
+            })).then(literal("latest").executes(DeathLogServer::executeRestoreLatest)))));
         });
 
         DeathLogPackets.Server.registerListeners();
+    }
+
+    private static int executeRestoreLatest(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+        final var deathInfoList = DeathLogServer.getStorage().getDeathInfoList(getProfile(context).getId());
+        deathInfoList.get(deathInfoList.size() - 1).restore(context.getSource().getPlayer());
+        return 0;
+    }
+
+    private static int executeRestore(CommandContext<ServerCommandSource> context, int index) throws CommandSyntaxException {
+        DeathLogServer.getStorage().getDeathInfoList(getProfile(context).getId()).get(index).restore(context.getSource().getPlayer());
+        return 0;
+    }
+
+    private static GameProfile getProfile(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+        var profileArgument = GameProfileArgumentType.getProfileArgument(context, "player");
+        return profileArgument.iterator().next();
     }
 
     private static RequiredArgumentBuilder<ServerCommandSource, GameProfileArgumentType.GameProfileArgument> createProfileArgument() {
