@@ -2,12 +2,14 @@ package com.glisco.deathlog.client;
 
 import com.glisco.deathlog.death_info.DeathInfoProperty;
 import com.glisco.deathlog.death_info.DeathInfoPropertySerializer;
+import com.glisco.deathlog.death_info.RestorableDeathInfoProperty;
 import com.glisco.deathlog.death_info.properties.InventoryProperty;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.util.collection.DefaultedList;
@@ -54,6 +56,10 @@ public class DeathInfo {
         final var nbt = new NbtCompound();
         nbt.put("DeathInfo", writeNbt());
         buffer.writeNbt(nbt);
+    }
+
+    public void restore(ServerPlayerEntity player) {
+        properties.values().stream().filter(property -> property instanceof RestorableDeathInfoProperty).forEach(property -> ((RestorableDeathInfoProperty) property).restore(player));
     }
 
     public void setProperty(String property, DeathInfoProperty value) {

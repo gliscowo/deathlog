@@ -1,20 +1,24 @@
 package com.glisco.deathlog.death_info.properties;
 
-import com.glisco.deathlog.death_info.DeathInfoProperty;
 import com.glisco.deathlog.death_info.DeathInfoPropertyType;
+import com.glisco.deathlog.death_info.RestorableDeathInfoProperty;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 
-public class ScoreProperty implements DeathInfoProperty {
+public class ScoreProperty implements RestorableDeathInfoProperty {
 
     private final int score;
     private final int levels;
+    private final float progress;
+
     private final int xp;
 
-    public ScoreProperty(int score, int level, int xp) {
+    public ScoreProperty(int score, int level, float progress, int xp) {
         this.score = score;
         this.levels = level;
+        this.progress = progress;
         this.xp = xp;
     }
 
@@ -32,12 +36,19 @@ public class ScoreProperty implements DeathInfoProperty {
     public void writeNbt(NbtCompound nbt) {
         nbt.putInt("Score", score);
         nbt.putInt("Levels", levels);
+        nbt.putFloat("Progress", progress);
         nbt.putInt("XP", xp);
     }
 
     @Override
     public String toSearchableString() {
         return xp + " " + levels;
+    }
+
+    @Override
+    public void restore(ServerPlayerEntity player) {
+        player.experienceProgress = progress;
+        player.setExperienceLevel(levels);
     }
 
     public static class Type extends DeathInfoPropertyType<ScoreProperty> {
@@ -58,9 +69,10 @@ public class ScoreProperty implements DeathInfoProperty {
 
             int score = nbt.getInt("Score");
             int levels = nbt.getInt("Levels");
+            float progress = nbt.getFloat("Progress");
             int xp = nbt.getInt("XP");
 
-            return new ScoreProperty(score, levels, xp);
+            return new ScoreProperty(score, levels, progress, xp);
         }
     }
 }

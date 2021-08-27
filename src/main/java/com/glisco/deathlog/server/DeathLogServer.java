@@ -2,6 +2,7 @@ package com.glisco.deathlog.server;
 
 import com.glisco.deathlog.client.DeathInfo;
 import com.glisco.deathlog.network.DeathLogPackets;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import net.fabricmc.api.DedicatedServerModInitializer;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
@@ -51,7 +52,16 @@ public class DeathLogServer implements DedicatedServerModInitializer {
 
                 DeathLogPackets.Server.openScreen(profile.getId(), context.getSource().getPlayer());
                 return 0;
-            }))));
+            }))).then(literal("restore").then(createProfileArgument().then(argument("index", IntegerArgumentType.integer()).executes(context -> {
+                int index = IntegerArgumentType.getInteger(context, "index");
+
+                var profileArgument = GameProfileArgumentType.getProfileArgument(context, "player");
+                var profile = profileArgument.iterator().next();
+
+                DeathLogServer.getStorage().getDeathInfoList(profile.getId()).get(index).restore(context.getSource().getPlayer());
+
+                return 0;
+            })))));
         });
 
         DeathLogPackets.Server.registerListeners();

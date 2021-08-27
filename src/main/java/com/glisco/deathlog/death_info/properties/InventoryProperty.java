@@ -1,16 +1,19 @@
 package com.glisco.deathlog.death_info.properties;
 
-import com.glisco.deathlog.death_info.DeathInfoProperty;
 import com.glisco.deathlog.death_info.DeathInfoPropertyType;
+import com.glisco.deathlog.death_info.RestorableDeathInfoProperty;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.collection.DefaultedList;
 
-public class InventoryProperty implements DeathInfoProperty {
+import java.util.function.BiConsumer;
+
+public class InventoryProperty implements RestorableDeathInfoProperty {
 
     private final DefaultedList<ItemStack> playerItems;
     private final DefaultedList<ItemStack> playerArmor;
@@ -24,14 +27,10 @@ public class InventoryProperty implements DeathInfoProperty {
         this.playerItems = DefaultedList.ofSize(37, ItemStack.EMPTY);
         this.playerArmor = DefaultedList.ofSize(4, ItemStack.EMPTY);
 
-        for (int i = 0; i < playerArmor.size(); i++) {
-            playerArmor.set(i, playerInventory.armor.get(i).copy());
-        }
-        for (int i = 0; i < 36; i++) {
-            playerItems.set(i, playerInventory.main.get(i).copy());
-        }
+        copy(playerInventory.armor, playerArmor);
+        copy(playerInventory.main, playerItems);
 
-        playerItems.set(36, playerInventory.offHand.get(0));
+        playerItems.set(36, playerInventory.offHand.get(0).copy());
     }
 
     @Override
@@ -59,15 +58,21 @@ public class InventoryProperty implements DeathInfoProperty {
     public String toSearchableString() {
         StringBuilder builder = new StringBuilder();
 
-        for (ItemStack stack : playerItems) {
-            builder.append(stack.getName().getString());
-        }
-
-        for (ItemStack stack : playerArmor) {
-            builder.append(stack.getName().getString());
-        }
+        playerItems.forEach(stack -> builder.append(stack.getName().getString()));
+        playerArmor.forEach(stack -> builder.append(stack.getName().getString()));
 
         return builder.toString();
+    }
+
+    @Override
+    public void restore(ServerPlayerEntity player) {
+        final var inventory = player.getInventory();
+        inventory.clear();
+
+        copy(playerArmor, inventory.armor);
+        copy(playerItems, inventory.main, 36);
+
+        inventory.offHand.set(0, playerItems.get(36));
     }
 
     public DefaultedList<ItemStack> getPlayerArmor() {
@@ -76,6 +81,14 @@ public class InventoryProperty implements DeathInfoProperty {
 
     public DefaultedList<ItemStack> getPlayerItems() {
         return playerItems;
+    }
+
+    private static void copy(DefaultedList<ItemStack> list, DefaultedList<ItemStack> other) {
+        copy(list, other, list.size());
+    }
+
+    private static void copy(DefaultedList<ItemStack> list, DefaultedList<ItemStack> other, int maxItems) {
+        for (int i = 0; i < maxItems; i++) other.set(i, list.get(i).copy());
     }
 
     public static class Type extends DeathInfoPropertyType<InventoryProperty> {
