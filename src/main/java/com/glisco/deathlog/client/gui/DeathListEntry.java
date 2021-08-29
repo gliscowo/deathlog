@@ -1,7 +1,6 @@
 package com.glisco.deathlog.client.gui;
 
 import com.glisco.deathlog.client.DeathInfo;
-import com.glisco.deathlog.client.DeathLogClient;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
@@ -11,8 +10,6 @@ import net.minecraft.client.gui.widget.AlwaysSelectedEntryListWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-
-import java.util.function.Consumer;
 
 public class DeathListEntry extends AlwaysSelectedEntryListWidget.Entry<DeathListEntry> {
 
@@ -38,23 +35,41 @@ public class DeathListEntry extends AlwaysSelectedEntryListWidget.Entry<DeathLis
 
         RenderSystem.setShaderTexture(0, TRASH_CAN_TEXTURE);
 
-        final boolean trashCanHovered = mouseX > x + 185 && mouseX < x + 213 && mouseY > y + 5 && mouseY < y + 35;
-        int v = trashCanHovered ? 34 : 17;
-        DrawableHelper.drawTexture(matrices, x + 190, y + 10, 0, v, 17, 17, 64, 64);
+        final boolean trashCanHovered = trashCanHovered(x, y, mouseX, mouseY);
+        int trashV = trashCanHovered ? 16 : 0;
+        DrawableHelper.drawTexture(matrices, x + 195, y + 10, 0, trashV, 16, 16, 32, 32);
+
+        final boolean restoreHovered = restoreHovered(x, y, mouseX, mouseY);
+        int restoreV = restoreHovered ? 16 : 0;
+        if (parent.restoreEnabled) DrawableHelper.drawTexture(matrices, x + 170, y + 10, 16, restoreV, 16, 16, 32, 32);
 
         if (trashCanHovered) MinecraftClient.getInstance().currentScreen.renderTooltip(matrices, Text.of("Shift-Click to delete"), mouseX, mouseY);
+        if (restoreHovered) MinecraftClient.getInstance().currentScreen.renderTooltip(matrices, Text.of("Shift-Click to restore"), mouseX, mouseY);
 
         this.lastRenderX = x;
         this.lastRenderY = y;
     }
 
+    private boolean trashCanHovered(int x, int y, double mouseX, double mouseY) {
+        return mouseX > x + 191 && mouseX < x + 218 && mouseY > y + 5 && mouseY < y + 35;
+    }
+
+    private boolean restoreHovered(int x, int y, double mouseX, double mouseY) {
+        return parent.restoreEnabled && mouseX > x + 165 && mouseX < x + 192 && mouseY > y + 5 && mouseY < y + 35;
+    }
+
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        final boolean isDeleteClick = mouseX > lastRenderX + 185 && mouseX < lastRenderX + 213 && mouseY > lastRenderY + 5 && mouseY < lastRenderY + 35;
+        final boolean isDeleteClick = trashCanHovered(lastRenderX, lastRenderY, mouseX, mouseY);
+        final boolean isRestoreClick = restoreHovered(lastRenderX, lastRenderY, mouseX, mouseY);
 
-        if (isDeleteClick && Screen.hasShiftDown()) {
-            parent.deleteInfoFromStorage(this.info);
-            this.parent.refilter();
+        if (Screen.hasShiftDown()) {
+            if (isDeleteClick) {
+                parent.deleteInfoFromStorage(this.info);
+                this.parent.refilter();
+            } else if (isRestoreClick) {
+                parent.restoreInfo(this.info);
+            }
         } else {
             this.parent.setSelected(this);
         }

@@ -19,7 +19,7 @@ public class DeathInfoPropertySerializer {
         TYPES.put("string", StringProperty.Type.INSTANCE);
     }
 
-    public static void register(String id, DeathInfoPropertyType<?> type){
+    public static void register(String id, DeathInfoPropertyType<?> type) {
         TYPES.put(id, type);
     }
 

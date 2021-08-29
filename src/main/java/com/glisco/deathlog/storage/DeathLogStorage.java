@@ -10,11 +10,13 @@ import java.util.UUID;
 
 public interface DeathLogStorage {
 
-    List<DeathInfo> getDeathInfoList(@Nullable UUID player);
+    List<DeathInfo> getDeathInfoList(@Nullable UUID profile);
 
-    void delete(DeathInfo info, @Nullable UUID player);
+    void delete(DeathInfo info, @Nullable UUID profile);
 
     void store(Text deathMessage, PlayerEntity player);
+
+    void restore(int index, @Nullable UUID profile);
 
     boolean isErrored();
 

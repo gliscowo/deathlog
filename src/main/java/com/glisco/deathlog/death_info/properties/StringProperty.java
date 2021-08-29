@@ -47,7 +47,7 @@ public class StringProperty implements DeathInfoProperty {
 
         public static final Type INSTANCE = new Type();
 
-        private Type() { super("deathlog.deathinfoproperty.string", "string"); }
+        private Type() {super("deathlog.deathinfoproperty.string", "string");}
 
         @Override
         public boolean displayedInInfoView() {

@@ -1,7 +1,9 @@
 package com.glisco.deathlog.network;
 
+import com.glisco.deathlog.DeathLogCommon;
 import com.glisco.deathlog.client.DeathLogClient;
 import com.glisco.deathlog.server.DeathLogServer;
+import com.glisco.deathlog.storage.BaseDeathLogStorage;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
@@ -21,6 +23,7 @@ public class DeathLogPackets {
     public static class Client {
 
         public static final Identifier REQUEST_DELETION_ID = new Identifier("deathlog", "request_deletion");
+        public static final Identifier REQUEST_RESTORE_ID = new Identifier("deathlog", "request_restore");
 
         public static void registerListeners() {
             ClientPlayNetworking.registerGlobalReceiver(Server.OPEN_SCREEN_ID, Client::handleOpenScreen);
@@ -38,20 +41,52 @@ public class DeathLogPackets {
             ClientPlayNetworking.send(REQUEST_DELETION_ID, buffer);
         }
 
+        public static void requestRestore(UUID profile, int index) {
+            var buffer = PacketByteBufs.create();
+            buffer.writeUuid(profile);
+            buffer.writeVarInt(index);
+            ClientPlayNetworking.send(REQUEST_RESTORE_ID, buffer);
+        }
+
     }
 
     public static class Server {
 
         public static final Identifier OPEN_SCREEN_ID = new Identifier("deathlog", "open_screen");
 
-        public static void registerListeners() {
+        public static void registerDedicatedListeners() {
             ServerPlayNetworking.registerGlobalReceiver(Client.REQUEST_DELETION_ID, Server::handleDelete);
+        }
+
+        public static void registerCommonListeners() {
+            ServerPlayNetworking.registerGlobalReceiver(Client.REQUEST_RESTORE_ID, Server::handleRestore);
+        }
+
+        private static void handleRestore(MinecraftServer minecraftServer, ServerPlayerEntity player, ServerPlayNetworkHandler serverPlayNetworkHandler, PacketByteBuf byteBuf, PacketSender packetSender) {
+            var profileId = byteBuf.readUuid();
+            var index = byteBuf.readVarInt();
+
+            minecraftServer.execute(() -> {
+                if (!player.hasPermissionLevel(4)) {
+                    BaseDeathLogStorage.LOGGER.warn("Received unauthorized restore packet");
+                    return;
+                }
+
+                var targetPlayer = minecraftServer.getPlayerManager().getPlayer(profileId);
+                if (targetPlayer == null) {
+                    BaseDeathLogStorage.LOGGER.warn("Received restore packet for invalid player");
+                    return;
+                }
+
+                DeathLogCommon.getStorage().getDeathInfoList(profileId).get(index).restore(targetPlayer);
+            });
         }
 
         private static void handleDelete(MinecraftServer minecraftServer, ServerPlayerEntity player, ServerPlayNetworkHandler serverPlayNetworkHandler, PacketByteBuf byteBuf, PacketSender packetSender) {
             var profileId = byteBuf.readUuid();
             var index = byteBuf.readVarInt();
-            DeathLogServer.getStorage().delete(DeathLogServer.getStorage().getDeathInfoList(profileId).get(index), profileId);
+
+            minecraftServer.execute(() -> DeathLogServer.getStorage().delete(DeathLogServer.getStorage().getDeathInfoList(profileId).get(index), profileId));
         }
 
         public static void openScreen(UUID profileId, ServerPlayerEntity target) {

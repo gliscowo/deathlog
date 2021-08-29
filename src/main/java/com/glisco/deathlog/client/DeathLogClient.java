@@ -1,23 +1,20 @@
 package com.glisco.deathlog.client;
 
+import com.glisco.deathlog.DeathLogCommon;
 import com.glisco.deathlog.client.gui.DeathLogScreen;
 import com.glisco.deathlog.network.DeathLogPackets;
 import com.glisco.deathlog.storage.SingletonDeathLogStorage;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
-import net.fabricmc.fabric.mixin.networking.accessor.MinecraftClientAccessor;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.StatsScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.option.KeyBinding;
-import net.minecraft.client.toast.SystemToast;
 import net.minecraft.text.Text;
 import org.lwjgl.glfw.GLFW;
 
@@ -31,6 +28,7 @@ public class DeathLogClient implements ClientModInitializer {
     public void onInitializeClient() {
 
         storage = new ClientDeathLogStorage();
+        DeathLogCommon.setStorage(storage);
 
         ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
             if (!(screen instanceof StatsScreen)) return;

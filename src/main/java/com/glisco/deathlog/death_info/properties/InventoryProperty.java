@@ -11,8 +11,6 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.collection.DefaultedList;
 
-import java.util.function.BiConsumer;
-
 public class InventoryProperty implements RestorableDeathInfoProperty {
 
     private final DefaultedList<ItemStack> playerItems;

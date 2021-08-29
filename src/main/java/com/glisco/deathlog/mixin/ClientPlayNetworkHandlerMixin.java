@@ -15,12 +15,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(ClientPlayNetworkHandler.class)
 public class ClientPlayNetworkHandlerMixin {
 
-    @Shadow @Final private MinecraftClient client;
+    @Shadow
+    @Final
+    private MinecraftClient client;
 
     @SuppressWarnings("ConstantConditions")
     @Inject(method = "onDeathMessage", at = @At("HEAD"))
     public void onClientDeath(DeathMessageS2CPacket packet, CallbackInfo ci) {
-        if(!RenderSystem.isOnRenderThread()) return;
+        if (!RenderSystem.isOnRenderThread()) return;
         DeathLogClient.getClientStorage().store(packet.getMessage(), client.player);
     }
 

@@ -1,12 +1,13 @@
 package com.glisco.deathlog.client;
 
+import com.glisco.deathlog.death_info.SpecialPropertyProvider;
 import com.glisco.deathlog.death_info.properties.*;
 import com.glisco.deathlog.mixin.MinecraftServerAccessor;
+import com.glisco.deathlog.network.DeathLogPackets;
 import com.glisco.deathlog.storage.BaseDeathLogStorage;
 import com.glisco.deathlog.storage.SingletonDeathLogStorage;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.toast.SystemToast;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
@@ -30,12 +31,12 @@ public class ClientDeathLogStorage extends BaseDeathLogStorage implements Single
     }
 
     @Override
-    public List<DeathInfo> getDeathInfoList(@Nullable UUID player) {
+    public List<DeathInfo> getDeathInfoList(@Nullable UUID profile) {
         return deathInfos;
     }
 
     @Override
-    public void delete(DeathInfo info, @Nullable UUID player) {
+    public void delete(DeathInfo info, @Nullable UUID profile) {
         deathInfos.remove(info);
         save(deathLogFile, deathInfos);
     }
@@ -60,8 +61,15 @@ public class ClientDeathLogStorage extends BaseDeathLogStorage implements Single
         deathInfo.setProperty(DeathInfo.DEATH_MESSAGE_KEY, new StringProperty("deathlog.deathinfoproperty.death_message", deathMessage.getString()));
         deathInfo.setProperty(DeathInfo.TIME_OF_DEATH_KEY, new StringProperty("deathlog.deathinfoproperty.time_of_death", new Date().toString()));
 
+        SpecialPropertyProvider.apply(deathInfo, player);
+
         deathInfos.add(deathInfo);
         save(deathLogFile, deathInfos);
+    }
+
+    @Override
+    public void restore(int index, @Nullable UUID profile) {
+        DeathLogPackets.Client.requestRestore(MinecraftClient.getInstance().player.getUuid(), index);
     }
 
     @Override

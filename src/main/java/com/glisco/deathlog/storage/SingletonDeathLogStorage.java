@@ -14,6 +14,10 @@ public interface SingletonDeathLogStorage extends DeathLogStorage {
         delete(info, null);
     }
 
+    default void restore(int index) {
+        restore(index, null);
+    }
+
     String getDefaultFilter();
 
 }

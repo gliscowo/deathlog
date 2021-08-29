@@ -2,7 +2,6 @@ package com.glisco.deathlog.client.gui;
 
 import com.glisco.deathlog.client.DeathInfo;
 import com.glisco.deathlog.storage.SingletonDeathLogStorage;
-import com.glisco.deathlog.mixin.MinecraftServerAccessor;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;

@@ -8,6 +8,7 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.Text;
 import org.apache.commons.io.FilenameUtils;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -23,7 +24,7 @@ public class ServerDeathLogStorage extends BaseDeathLogStorage {
         this.deathInfos = new HashMap<>();
         this.deathLogDir = FabricLoader.getInstance().getGameDir().resolve("deaths").toAbsolutePath();
 
-        if (!Files.exists(deathLogDir) && !deathLogDir.toFile().mkdir()){
+        if (!Files.exists(deathLogDir) && !deathLogDir.toFile().mkdir()) {
             raiseError("Failed to create directory");
 
             LOGGER.error("Failed to create DeathLog storage directory, further disk operations have been disabled");
@@ -32,7 +33,7 @@ public class ServerDeathLogStorage extends BaseDeathLogStorage {
 
         try {
             Files.list(deathLogDir).forEach(path -> {
-                if(isErrored()) return;
+                if (isErrored()) return;
 
                 if (!Files.exists(path)) return;
                 if (path.endsWith(".dat")) return;
@@ -62,14 +63,14 @@ public class ServerDeathLogStorage extends BaseDeathLogStorage {
     }
 
     @Override
-    public List<DeathInfo> getDeathInfoList(UUID player) {
-        return deathInfos.getOrDefault(player, new ArrayList<>());
+    public List<DeathInfo> getDeathInfoList(UUID profile) {
+        return deathInfos.getOrDefault(profile, new ArrayList<>());
     }
 
     @Override
-    public void delete(DeathInfo info, UUID player) {
-        deathInfos.get(player).remove(info);
-        save(deathLogDir.resolve(player.toString() + ".dat").toFile(), deathInfos.get(player));
+    public void delete(DeathInfo info, UUID profile) {
+        deathInfos.get(profile).remove(info);
+        save(deathLogDir.resolve(profile.toString() + ".dat").toFile(), deathInfos.get(profile));
     }
 
     @Override
@@ -89,5 +90,10 @@ public class ServerDeathLogStorage extends BaseDeathLogStorage {
 
         deathInfos.computeIfAbsent(player.getUuid(), uuid -> new ArrayList<>()).add(deathInfo);
         save(deathLogDir.resolve(player.getUuid().toString() + ".dat").toFile(), deathInfos.get(player.getUuid()));
+    }
+
+    @Override
+    public void restore(int index, @Nullable UUID profile) {
+        //NO-OP
     }
 }

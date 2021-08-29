@@ -1,5 +1,6 @@
 package com.glisco.deathlog.server;
 
+import com.glisco.deathlog.DeathLogCommon;
 import com.glisco.deathlog.client.DeathInfo;
 import com.glisco.deathlog.network.DeathLogPackets;
 import com.mojang.authlib.GameProfile;
@@ -26,9 +27,10 @@ public class DeathLogServer implements DedicatedServerModInitializer {
     @Override
     public void onInitializeServer() {
         storage = new ServerDeathLogStorage();
+        DeathLogCommon.setStorage(storage);
 
         CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> {
-            dispatcher.register(literal("deathlog").then(literal("list").then(createProfileArgument().executes(context -> {
+            dispatcher.register(literal("deathlog").requires(serverCommandSource -> serverCommandSource.hasPermissionLevel(4)).then(literal("list").then(createProfileArgument().executes(context -> {
                 var profile = getProfile(context);
 
                 final var deathInfoList = DeathLogServer.getStorage().getDeathInfoList(profile.getId());
@@ -56,7 +58,7 @@ public class DeathLogServer implements DedicatedServerModInitializer {
             })).then(literal("latest").executes(DeathLogServer::executeRestoreLatest)))));
         });
 
-        DeathLogPackets.Server.registerListeners();
+        DeathLogPackets.Server.registerDedicatedListeners();
     }
 
     private static int executeRestoreLatest(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
