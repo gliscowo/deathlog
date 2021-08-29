@@ -4,7 +4,6 @@ import com.glisco.deathlog.death_info.DeathInfoPropertySerializer;
 import com.glisco.deathlog.death_info.SpecialPropertyProvider;
 import com.glisco.deathlog.death_info.properties.TrinketComponentProperty;
 import com.glisco.deathlog.network.DeathLogPackets;
-import com.glisco.deathlog.storage.DeathInfoCreatedCallback;
 import com.glisco.deathlog.storage.DeathLogStorage;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
@@ -21,8 +20,6 @@ public class DeathLogCommon implements ModInitializer {
         }
 
         DeathLogPackets.Server.registerCommonListeners();
-
-        DeathInfoCreatedCallback.EVENT.register(info -> System.out.println("info created"));
     }
 
     public static void setStorage(DeathLogStorage storage) {

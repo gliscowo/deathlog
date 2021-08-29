@@ -9,7 +9,8 @@
   ],
   "contact": {
     "issues": "https://github.com/glisco03/deathlog/issues",
-    "sources": "https://github.com/glisco03/deathlog"
+    "sources": "https://github.com/glisco03/deathlog",
+    "homepage": "https://www.curseforge.com/minecraft/mc-mods/deathlog"
   },
   "license": "MIT",
   "icon": "assets/deathlog/icon.png",
