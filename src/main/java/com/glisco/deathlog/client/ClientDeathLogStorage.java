@@ -5,6 +5,7 @@ import com.glisco.deathlog.death_info.properties.*;
 import com.glisco.deathlog.mixin.MinecraftServerAccessor;
 import com.glisco.deathlog.network.DeathLogPackets;
 import com.glisco.deathlog.storage.BaseDeathLogStorage;
+import com.glisco.deathlog.storage.DeathInfoCreatedCallback;
 import com.glisco.deathlog.storage.SingletonDeathLogStorage;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
@@ -62,6 +63,7 @@ public class ClientDeathLogStorage extends BaseDeathLogStorage implements Single
         deathInfo.setProperty(DeathInfo.TIME_OF_DEATH_KEY, new StringProperty("deathlog.deathinfoproperty.time_of_death", new Date().toString()));
 
         SpecialPropertyProvider.apply(deathInfo, player);
+        DeathInfoCreatedCallback.EVENT.invoker().event(deathInfo);
 
         deathInfos.add(deathInfo);
         save(deathLogFile, deathInfos);

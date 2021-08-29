@@ -8,14 +8,19 @@ import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.fabricmc.api.DedicatedServerModInitializer;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.argument.GameProfileArgumentType;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.PlayerManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.MutableText;
+
+import java.util.function.Predicate;
 
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
@@ -30,7 +35,7 @@ public class DeathLogServer implements DedicatedServerModInitializer {
         DeathLogCommon.setStorage(storage);
 
         CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> {
-            dispatcher.register(literal("deathlog").requires(serverCommandSource -> serverCommandSource.hasPermissionLevel(4)).then(literal("list").then(createProfileArgument().executes(context -> {
+            dispatcher.register(literal("deathlog").then(literal("list").requires(hasPermission("deathlog.list")).then(createProfileArgument().executes(context -> {
                 var profile = getProfile(context);
 
                 final var deathInfoList = DeathLogServer.getStorage().getDeathInfoList(profile.getId());
@@ -49,16 +54,21 @@ public class DeathLogServer implements DedicatedServerModInitializer {
                 context.getSource().sendFeedback(new LiteralText("Queried §b" + infoListSize + "§r death info entries for player ").append("§b" + profile.getName()), false);
 
                 return infoListSize;
-            }))).then(literal("view").then(createProfileArgument().executes(context -> {
+            }))).then(literal("view").requires(hasPermission("deathlog.view")).then(createProfileArgument().executes(context -> {
                 DeathLogPackets.Server.openScreen(getProfile(context).getId(), context.getSource().getPlayer());
                 return 0;
-            }))).then(literal("restore").then(createProfileArgument().then(argument("index", IntegerArgumentType.integer()).executes(context -> {
+            }))).then(literal("restore").requires(hasPermission("deathlog.restore")).then(createProfileArgument().then(argument("index", IntegerArgumentType.integer()).executes(context -> {
                 int index = IntegerArgumentType.getInteger(context, "index");
                 return executeRestore(context, index);
             })).then(literal("latest").executes(DeathLogServer::executeRestoreLatest)))));
         });
 
         DeathLogPackets.Server.registerDedicatedListeners();
+    }
+
+    private static Predicate<ServerCommandSource> hasPermission(String node) {
+        if (FabricLoader.getInstance().isModLoaded("fabric-permissions-api-v0")) return Permissions.require(node);
+        return serverCommandSource -> serverCommandSource.hasPermissionLevel(4);
     }
 
     private static int executeRestoreLatest(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {

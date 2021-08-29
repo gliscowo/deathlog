@@ -4,6 +4,7 @@ import com.glisco.deathlog.client.DeathInfo;
 import com.glisco.deathlog.death_info.SpecialPropertyProvider;
 import com.glisco.deathlog.death_info.properties.*;
 import com.glisco.deathlog.storage.BaseDeathLogStorage;
+import com.glisco.deathlog.storage.DeathInfoCreatedCallback;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.Text;
@@ -87,6 +88,7 @@ public class ServerDeathLogStorage extends BaseDeathLogStorage {
         deathInfo.setProperty(DeathInfo.TIME_OF_DEATH_KEY, new StringProperty("deathlog.deathinfoproperty.time_of_death", new Date().toString()));
 
         SpecialPropertyProvider.apply(deathInfo, player);
+        DeathInfoCreatedCallback.EVENT.invoker().event(deathInfo);
 
         deathInfos.computeIfAbsent(player.getUuid(), uuid -> new ArrayList<>()).add(deathInfo);
         save(deathLogDir.resolve(player.getUuid().toString() + ".dat").toFile(), deathInfos.get(player.getUuid()));
