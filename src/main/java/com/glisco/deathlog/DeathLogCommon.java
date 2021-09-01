@@ -11,6 +11,7 @@ import net.fabricmc.loader.api.FabricLoader;
 public class DeathLogCommon implements ModInitializer {
 
     private static DeathLogStorage currentStorage = null;
+    private static boolean usePermissions;
 
     @Override
     public void onInitialize() {
@@ -19,7 +20,13 @@ public class DeathLogCommon implements ModInitializer {
             DeathInfoPropertySerializer.register(TrinketComponentProperty.Type.INSTANCE.getId(), TrinketComponentProperty.Type.INSTANCE);
         }
 
+        usePermissions = FabricLoader.getInstance().isModLoaded("fabric-permissions-api-v0");
+
         DeathLogPackets.Server.registerCommonListeners();
+    }
+
+    public static boolean usePermissions() {
+        return usePermissions;
     }
 
     public static void setStorage(DeathLogStorage storage) {

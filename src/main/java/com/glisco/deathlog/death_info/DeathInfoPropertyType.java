@@ -2,25 +2,27 @@ package com.glisco.deathlog.death_info;
 
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.LiteralText;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
+import net.minecraft.util.Formatting;
 
 public abstract class DeathInfoPropertyType<P extends DeathInfoProperty> {
 
-    private final TranslatableText name;
+    private final String translationKey;
     private final String id;
 
     public DeathInfoPropertyType(String translationKey, String id) {
-        this.name = new TranslatableText(translationKey);
+        this.translationKey = translationKey;
         this.id = id;
     }
 
-    public String getLocalizedName() {
-        return name.getString();
+    public MutableText getName() {
+        return new TranslatableText(translationKey);
     }
 
-    public static Text decorateName(String name) {
-        return new LiteralText("§9" + name + "§r");
+    public static Text decorateName(MutableText name) {
+        return name.formatted(Formatting.BLUE);
     }
 
     public String getId() {

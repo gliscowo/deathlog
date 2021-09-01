@@ -6,7 +6,7 @@ import net.minecraft.text.Text;
 public interface DeathInfoProperty {
 
     default Text getName() {
-        return DeathInfoPropertyType.decorateName(getType().getLocalizedName());
+        return DeathInfoPropertyType.decorateName(getType().getName());
     }
 
     DeathInfoPropertyType<?> getType();

@@ -40,7 +40,7 @@ public class StringProperty implements DeathInfoProperty {
 
     @Override
     public Text getName() {
-        return DeathInfoPropertyType.decorateName(new TranslatableText(translationKey).getString());
+        return DeathInfoPropertyType.decorateName(new TranslatableText(translationKey));
     }
 
     public static class Type extends DeathInfoPropertyType<StringProperty> {
