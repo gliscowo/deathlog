@@ -71,7 +71,7 @@ public class DeathLogClient implements ClientModInitializer {
         deathInfo.setProperty(DeathInfoProperty.Type.TIME_OF_DEATH, new DeathInfoProperty(new Date().toString()));
         deathInfo.setProperty(DeathInfoProperty.Type.DEATH_MESSAGE, new DeathInfoProperty(deathPacket.deathMessage.getString()));
 
-        final String coords = "§c" + player.getBlockPos().getX() + " §a" + player.getBlockPos().getY() + " §b" + player.getBlockPos().getY();
+        final String coords = "§c" + player.getBlockPos().getX() + " §a" + player.getBlockPos().getY() + " §b" + player.getBlockPos().getZ();
         deathInfo.setProperty(DeathInfoProperty.Type.COORDINATES, new DeathInfoProperty(coords));
 
         deathInfo.setProperty(DeathInfoProperty.Type.DIMENSION, new DeathInfoProperty(player.world.getRegistryKey().getValue().toString()));
