@@ -31,7 +31,7 @@ import static net.minecraft.server.command.CommandManager.literal;
 public class DeathLogServer implements DedicatedServerModInitializer {
 
     private static final DynamicCommandExceptionType INVALID_INDEX = new DynamicCommandExceptionType(o -> new LiteralText("No DeathInfo found for index " + o));
-    private static final DynamicCommandExceptionType NO_PLAYER_FOR_PROFILE = new DynamicCommandExceptionType(o -> new LiteralText("Player " + ((GameProfile)o).getName() + " is not online"));
+    private static final DynamicCommandExceptionType NO_PLAYER_FOR_PROFILE = new DynamicCommandExceptionType(o -> new LiteralText("Player " + ((GameProfile) o).getName() + " is not online"));
     private static final SimpleCommandExceptionType NO_DEATHS = new SimpleCommandExceptionType(new LiteralText("No DeathInfo found"));
 
     private static ServerDeathLogStorage storage;
@@ -53,7 +53,9 @@ public class DeathLogServer implements DedicatedServerModInitializer {
 
                     context.getSource().sendFeedback(new LiteralText(""), false);
                     context.getSource().sendFeedback(new LiteralText("§7-- §aBegin §bDeath Info Entry §7--"), false);
-                    while (leftText.hasNext()) context.getSource().sendFeedback(((MutableText) leftText.next()).append(new LiteralText(": ")).append(((MutableText)rightText.next()).formatted(Formatting.WHITE)), false);
+                    while (leftText.hasNext()) {
+                        context.getSource().sendFeedback(((MutableText) leftText.next()).append(new LiteralText(": ")).append(((MutableText) rightText.next()).formatted(Formatting.WHITE)), false);
+                    }
                     context.getSource().sendFeedback(new LiteralText("§7-- §cEnd §bDeath Info Entry §7--"), false);
                 }
 
@@ -74,7 +76,7 @@ public class DeathLogServer implements DedicatedServerModInitializer {
     }
 
     private static Predicate<ServerCommandSource> hasPermission(String node) {
-        return DeathLogCommon.usePermissions() ? ((Predicate<ServerCommandSource>) serverCommandSource -> serverCommandSource.hasPermissionLevel(4)).or(Permissions.require(node)) : serverCommandSource -> serverCommandSource.hasPermissionLevel(4);
+        return DeathLogCommon.usePermissions() ? Permissions.require(node, 4) : serverCommandSource -> serverCommandSource.hasPermissionLevel(4);
     }
 
     private static int executeRestoreLatest(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
