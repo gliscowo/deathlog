@@ -31,7 +31,8 @@ public class DeathLogPackets {
 
         private static void handleOpenScreen(MinecraftClient minecraftClient, ClientPlayNetworkHandler clientPlayNetworkHandler, PacketByteBuf packetByteBuf, PacketSender packetSender) {
             var storage = RemoteDeathLogStorage.read(packetByteBuf);
-            minecraftClient.execute(() -> DeathLogClient.openScreen(storage));
+            var canRestore = packetByteBuf.readBoolean();
+            minecraftClient.execute(() -> DeathLogClient.openScreen(storage, canRestore));
         }
 
         public static void requestDeletion(UUID profile, int index) {
@@ -92,8 +93,10 @@ public class DeathLogPackets {
         public static void openScreen(UUID profileId, ServerPlayerEntity target) {
             var buffer = PacketByteBufs.create();
             var infos = DeathLogServer.getStorage().getDeathInfoList(profileId);
+
             buffer.writeCollection(infos, (packetByteBuf, info) -> info.write(packetByteBuf));
             buffer.writeUuid(profileId);
+            buffer.writeBoolean(target.getServer().getPlayerManager().getPlayer(profileId) != null);
 
             ServerPlayNetworking.send(target, OPEN_SCREEN_ID, buffer);
         }

@@ -11,7 +11,7 @@ public class DeathListWidget extends AlwaysSelectedEntryListWidget<DeathListEntr
 
     private final SingletonDeathLogStorage storage;
     private String filter;
-    public final boolean restoreEnabled;
+    public boolean restoreEnabled;
 
     public DeathListWidget(MinecraftClient client, int width, int height, int top, int bottom, int itemHeight, SingletonDeathLogStorage storage) {
         super(client, width, height, top, bottom, itemHeight);

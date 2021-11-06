@@ -47,7 +47,7 @@ public class RemoteDeathLogStorage extends BaseDeathLogStorage implements Single
 
     @Override
     public void restore(int index, @Nullable UUID profile) {
-        DeathLogPackets.Client.requestRestore(MinecraftClient.getInstance().player.getUuid(), index);
+        DeathLogPackets.Client.requestRestore(profileId, index);
     }
 
     @Override

@@ -28,6 +28,10 @@ public class DeathLogScreen extends Screen {
         this.storage = storage;
     }
 
+    public void disableRestore() {
+        this.deathList.restoreEnabled = false;
+    }
+
     @Override
     protected void init() {
 

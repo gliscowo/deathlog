@@ -47,8 +47,14 @@ public class DeathLogClient implements ClientModInitializer {
         DeathLogPackets.Client.registerListeners();
     }
 
-    public static void openScreen(SingletonDeathLogStorage storage) {
-        MinecraftClient.getInstance().setScreen(new DeathLogScreen(MinecraftClient.getInstance().currentScreen, storage));
+    private void openScreen(SingletonDeathLogStorage clientStorage) {
+        openScreen(clientStorage, true);
+    }
+
+    public static void openScreen(SingletonDeathLogStorage storage, boolean canRestore) {
+        final var screen = new DeathLogScreen(MinecraftClient.getInstance().currentScreen, storage);
+        MinecraftClient.getInstance().setScreen(screen);
+        if (!canRestore) screen.disableRestore();
     }
 
     public static SingletonDeathLogStorage getClientStorage() {
