@@ -32,7 +32,7 @@
   "depends": {
     "fabricloader": "*",
     "fabric": "*",
-    "minecraft": ">=1.17"
+    "minecraft": "*"
   },
   "custom": {
     "modmenu": {
