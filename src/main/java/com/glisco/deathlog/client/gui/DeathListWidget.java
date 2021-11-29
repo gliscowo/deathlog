@@ -1,9 +1,11 @@
 package com.glisco.deathlog.client.gui;
 
 import com.glisco.deathlog.client.DeathInfo;
+import com.glisco.deathlog.network.RemoteDeathLogStorage;
 import com.glisco.deathlog.storage.SingletonDeathLogStorage;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.widget.AlwaysSelectedEntryListWidget;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
@@ -35,11 +37,16 @@ public class DeathListWidget extends AlwaysSelectedEntryListWidget<DeathListEntr
 
         if (Objects.equals(filter, pattern)) return getEntryCount() != 0;
         this.filter = pattern;
+
         return refilter();
     }
 
     public boolean refilter() {
+        var selectedName = this.getSelectedOrNull() == null ? null : this.getSelectedOrNull().getInfo().getListName().getString();
+
         this.clearEntries();
+        this.setSelected(null);
+
         if (filter.isBlank()) {
             storage.getDeathInfoList().forEach(info -> addEntry(new DeathListEntry(this, info)));
         } else {
@@ -48,7 +55,21 @@ public class DeathListWidget extends AlwaysSelectedEntryListWidget<DeathListEntr
             });
         }
 
+        for (int idx = 0; idx < this.getEntryCount(); idx++) {
+            if (!this.getEntry(idx).getInfo().getListName().getString().equals(selectedName)) continue;
+            this.setSelected(this.getEntry(idx));
+            break;
+        }
+
         return getEntryCount() != 0;
     }
 
+    @Override
+    public void setSelected(@Nullable DeathListEntry entry) {
+        if (entry != null && this.getSelectedOrNull() != entry && this.storage instanceof RemoteDeathLogStorage remoteStorage) {
+            remoteStorage.fetchCompleteInfo(entry.getInfo());
+        }
+
+        super.setSelected(entry);
+    }
 }

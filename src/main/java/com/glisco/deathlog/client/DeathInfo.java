@@ -4,6 +4,7 @@ import com.glisco.deathlog.death_info.DeathInfoProperty;
 import com.glisco.deathlog.death_info.DeathInfoPropertySerializer;
 import com.glisco.deathlog.death_info.RestorableDeathInfoProperty;
 import com.glisco.deathlog.death_info.properties.InventoryProperty;
+import com.glisco.deathlog.death_info.properties.TrinketComponentProperty;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
@@ -58,6 +59,18 @@ public class DeathInfo {
         buffer.writeNbt(nbt);
     }
 
+    public void writePartial(PacketByteBuf buffer) {
+        final var list = new NbtList();
+        properties.forEach((s, property) -> {
+            if (property instanceof InventoryProperty || property instanceof TrinketComponentProperty) return;
+            list.add(DeathInfoPropertySerializer.save(property, s));
+        });
+
+        var nbt = new NbtCompound();
+        nbt.put("DeathInfo", list);
+        buffer.writeNbt(nbt);
+    }
+
     public void restore(ServerPlayerEntity player) {
         properties.values().stream().filter(property -> property instanceof RestorableDeathInfoProperty).forEach(property -> ((RestorableDeathInfoProperty) property).restore(player));
     }
@@ -68,6 +81,10 @@ public class DeathInfo {
 
     public Optional<DeathInfoProperty> getProperty(String property) {
         return Optional.ofNullable(properties.get(property));
+    }
+
+    public boolean isPartial() {
+        return getProperty(INVENTORY_KEY).isEmpty();
     }
 
     public Text getListName() {

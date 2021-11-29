@@ -50,6 +50,13 @@ public class RemoteDeathLogStorage extends BaseDeathLogStorage implements Single
         DeathLogPackets.Client.requestRestore(profileId, index);
     }
 
+    public void fetchCompleteInfo(DeathInfo info) {
+        if (!info.isPartial()) return;
+
+        var idx = this.getDeathInfoList().indexOf(info);
+        DeathLogPackets.Client.fetchInfo(profileId, idx);
+    }
+
     @Override
     public String getDefaultFilter() {
         return "Server";

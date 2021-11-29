@@ -32,6 +32,11 @@ public class DeathLogScreen extends Screen {
         this.deathList.restoreEnabled = false;
     }
 
+    public void updateInfo(DeathInfo info, int index) {
+        this.storage.getDeathInfoList().set(index, info);
+        this.deathList.refilter();
+    }
+
     @Override
     protected void init() {
 
@@ -64,8 +69,10 @@ public class DeathLogScreen extends Screen {
         final var originX = 230 + 30;
         final var originY = Math.min(this.height - 40, 300);
 
-        if (deathList.getSelectedOrNull() != null) {
-            DeathInfo info = deathList.getSelectedOrNull().getInfo();
+        final var selectedEntry = deathList.getSelectedOrNull();
+        if (selectedEntry != null && !selectedEntry.getInfo().isPartial()) {
+            DeathInfo info = selectedEntry.getInfo();
+
             textRenderer.draw(matrices, info.getTitle(), originX, 16, 0xFFFFFF);
 
             final var leftColumnText = info.getLeftColumnText();

@@ -5,6 +5,7 @@ import com.glisco.deathlog.client.DeathInfo;
 import com.glisco.deathlog.network.DeathLogPackets;
 import com.mojang.authlib.GameProfile;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -17,9 +18,11 @@ import net.minecraft.command.CommandSource;
 import net.minecraft.command.argument.GameProfileArgumentType;
 import net.minecraft.server.PlayerManager;
 import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.MutableText;
 import net.minecraft.util.Formatting;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.function.Function;
@@ -42,41 +45,54 @@ public class DeathLogServer implements DedicatedServerModInitializer {
         DeathLogCommon.setStorage(storage);
 
         CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> {
-            dispatcher.register(literal("deathlog").then(literal("list").requires(hasPermission("deathlog.list")).then(createProfileArgument().executes(context -> {
-                var profile = getProfile(context);
-
-                final var deathInfoList = DeathLogServer.getStorage().getDeathInfoList(profile.getId());
-                final var infoListSize = deathInfoList.size();
-                for (DeathInfo deathInfo : deathInfoList) {
-                    var leftText = deathInfo.getLeftColumnText().iterator();
-                    var rightText = deathInfo.getRightColumnText().iterator();
-
-                    context.getSource().sendFeedback(new LiteralText(""), false);
-                    context.getSource().sendFeedback(new LiteralText("§7-- §aBegin §bDeath Info Entry §7--"), false);
-                    while (leftText.hasNext()) {
-                        context.getSource().sendFeedback(((MutableText) leftText.next()).append(new LiteralText(": ")).append(((MutableText) rightText.next()).formatted(Formatting.WHITE)), false);
-                    }
-                    context.getSource().sendFeedback(new LiteralText("§7-- §cEnd §bDeath Info Entry §7--"), false);
-                }
-
-                if (infoListSize > 0) context.getSource().sendFeedback(new LiteralText(""), false);
-                context.getSource().sendFeedback(new LiteralText("Queried §b" + infoListSize + "§r death info entries for player ").append("§b" + profile.getName()), false);
-
-                return infoListSize;
-            }))).then(literal("view").requires(hasPermission("deathlog.view")).then(createProfileArgument().executes(context -> {
-                DeathLogPackets.Server.openScreen(getProfile(context).getId(), context.getSource().getPlayer());
-                return 0;
-            }))).then(literal("restore").requires(hasPermission("deathlog.restore")).then(createProfileArgument().then(argument("index", IntegerArgumentType.integer()).executes(context -> {
-                int index = IntegerArgumentType.getInteger(context, "index");
-                return executeRestore(context, index);
-            })).then(literal("latest").executes(DeathLogServer::executeRestoreLatest)))));
+            dispatcher.register(literal("deathlog").then(literal("list").requires(hasPermission("deathlog.list"))
+                            .then(createProfileArgument().executes(context -> executeList(context, null))
+                                    .then(argument("search_term", StringArgumentType.string())
+                                            .executes(context -> executeList(context, StringArgumentType.getString(context, "search_term"))))))
+                    .then(literal("view").requires(hasPermission("deathlog.view")).then(createProfileArgument().executes(context -> {
+                        DeathLogPackets.Server.openScreen(getProfile(context).getId(), context.getSource().getPlayer());
+                        return 0;
+                    }))).then(literal("restore").requires(hasPermission("deathlog.restore")).then(createProfileArgument().then(argument("index", IntegerArgumentType.integer()).executes(context -> {
+                        int index = IntegerArgumentType.getInteger(context, "index");
+                        return executeRestore(context, index);
+                    })).then(literal("latest").executes(DeathLogServer::executeRestoreLatest)))));
         });
 
         DeathLogPackets.Server.registerDedicatedListeners();
     }
 
+    private int executeList(CommandContext<ServerCommandSource> context, @Nullable String filter) throws CommandSyntaxException {
+        var profile = getProfile(context);
+
+        var deathInfoList = DeathLogServer.getStorage().getDeathInfoList(profile.getId());
+        if (filter != null) deathInfoList = deathInfoList.stream().filter(info -> info.createSearchString().contains(filter.toLowerCase())).toList();
+
+        final var infoListSize = deathInfoList.size();
+        for (int i = 0; i < infoListSize; i++) {
+            DeathInfo deathInfo = deathInfoList.get(i);
+            var leftText = deathInfo.getLeftColumnText().iterator();
+            var rightText = deathInfo.getRightColumnText().iterator();
+
+            context.getSource().sendFeedback(new LiteralText(""), false);
+            context.getSource().sendFeedback(new LiteralText("§7-- §aBegin §bDeath Info Entry [" + i + "]§7--"), false);
+            while (leftText.hasNext()) {
+                context.getSource().sendFeedback(((MutableText) leftText.next()).append(new LiteralText(": ")).append(((MutableText) rightText.next()).formatted(Formatting.WHITE)), false);
+            }
+            context.getSource().sendFeedback(new LiteralText("§7-- §cEnd §bDeath Info Entry [" + i + "]§7--"), false);
+        }
+
+        if (infoListSize > 0) context.getSource().sendFeedback(new LiteralText(""), false);
+        context.getSource().sendFeedback(new LiteralText("Queried §b" + infoListSize + "§r death info entries for player ").append("§b" + profile.getName()), false);
+
+        return infoListSize;
+    }
+
     private static Predicate<ServerCommandSource> hasPermission(String node) {
         return DeathLogCommon.usePermissions() ? Permissions.require(node, 4) : serverCommandSource -> serverCommandSource.hasPermissionLevel(4);
+    }
+
+    public static boolean hasPermission(ServerPlayerEntity player, String node) {
+        return DeathLogCommon.usePermissions() ? Permissions.check(player, node, 4) : player.hasPermissionLevel(4);
     }
 
     private static int executeRestoreLatest(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
