@@ -32,7 +32,10 @@
   "depends": {
     "fabricloader": "*",
     "fabric": "*",
-    "minecraft": "*"
+    "minecraft": ">=1.18"
+  },
+  "recommends": {
+    "trinkets": ">=3.1.0"
   },
   "custom": {
     "modmenu": {
