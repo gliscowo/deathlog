@@ -124,7 +124,13 @@ public class DeathLogPackets {
                     return;
                 }
 
-                DeathLogCommon.getStorage().getDeathInfoList(profileId).get(index).restore(targetPlayer);
+                final var infoList = DeathLogCommon.getStorage().getDeathInfoList(profileId);
+                if (index > infoList.size() - 1) {
+                    BaseDeathLogStorage.LOGGER.warn("Received restore packet with invalid index from '{}'", player.getName().getString());
+                    return;
+                }
+
+                infoList.get(index).restore(targetPlayer);
             });
         }
 

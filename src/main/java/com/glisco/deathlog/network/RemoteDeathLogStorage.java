@@ -3,7 +3,6 @@ package com.glisco.deathlog.network;
 import com.glisco.deathlog.client.DeathInfo;
 import com.glisco.deathlog.storage.BaseDeathLogStorage;
 import com.glisco.deathlog.storage.SingletonDeathLogStorage;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.text.Text;
