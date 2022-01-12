@@ -1,5 +1,7 @@
 package com.glisco.deathlog.client.gui;
 
+import com.glisco.deathlog.client.ClientDeathLogStorage;
+import com.glisco.deathlog.client.Config;
 import com.glisco.deathlog.client.DeathInfo;
 import com.glisco.deathlog.storage.SingletonDeathLogStorage;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -55,6 +57,19 @@ public class DeathLogScreen extends Screen {
         this.addDrawableChild(searchField);
 
         searchField.setText(storage.getDefaultFilter());
+
+        if (storage instanceof ClientDeathLogStorage) {
+            this.addDrawableChild(new ButtonWidget(130, 5, 100, 20, createScreenshotButtonText(), button -> {
+                Config.instance().screenshotsEnabled = !Config.instance().screenshotsEnabled;
+                Config.save();
+
+                button.setMessage(createScreenshotButtonText());
+            }));
+        }
+    }
+
+    private static Text createScreenshotButtonText() {
+        return Text.of("Screenshot: " + (Config.instance().screenshotsEnabled ? "§aON" : "§cOFF"));
     }
 
     @Override

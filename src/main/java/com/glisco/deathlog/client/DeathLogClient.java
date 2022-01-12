@@ -45,6 +45,7 @@ public class DeathLogClient implements ClientModInitializer {
         });
 
         DeathLogPackets.Client.registerListeners();
+        Config.load();
     }
 
     private void openScreen(SingletonDeathLogStorage clientStorage) {
