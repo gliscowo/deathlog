@@ -52,7 +52,7 @@ public class ServerDeathLogStorage extends BaseDeathLogStorage {
                 }
 
                 var list = new ArrayList<DeathInfo>();
-                load(path.toFile(), list);
+                load(path.toFile(), list).join();
                 deathInfos.put(uuid, list);
             });
         } catch (IOException | IllegalArgumentException e) {

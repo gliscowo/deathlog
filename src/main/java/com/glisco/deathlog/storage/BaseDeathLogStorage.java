@@ -1,6 +1,7 @@
 package com.glisco.deathlog.storage;
 
 import com.glisco.deathlog.client.DeathInfo;
+import com.google.common.collect.ImmutableList;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtIo;
@@ -11,16 +12,29 @@ import org.apache.logging.log4j.Logger;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 public abstract class BaseDeathLogStorage implements DeathLogStorage {
 
     private static final int FORMAT_REVISION = 2;
+    private static final Executor FS_EXECUTOR = Executors.newSingleThreadExecutor();
     public static final Logger LOGGER = LogManager.getLogger();
 
     private boolean errored = false;
     private String errorCondition = "";
 
-    protected void load(File file, List<DeathInfo> into) {
+    protected CompletableFuture<Void> load(File file, List<DeathInfo> into) {
+        CompletableFuture<Void> future = new CompletableFuture<>();
+        FS_EXECUTOR.execute(() -> {
+            load0(file, into);
+            future.complete(null);
+        });
+        return future;
+    }
+
+    private void load0(File file, List<DeathInfo> into) {
         if (errored) {
             LOGGER.warn("Attempted to load DeathLog database even though disk operations are disabled");
             return;
@@ -57,6 +71,12 @@ public abstract class BaseDeathLogStorage implements DeathLogStorage {
     }
 
     protected void save(File file, List<DeathInfo> list) {
+        // Copying the list because of concurrency issues
+        List<DeathInfo> immutableList = ImmutableList.copyOf(list);
+        FS_EXECUTOR.execute(() -> save0(file, immutableList));
+    }
+
+    private void save0(File file, List<DeathInfo> list) {
         if (errored) {
             LOGGER.warn("Attempted to save DeathLog database even though disk operations are disabled");
             return;

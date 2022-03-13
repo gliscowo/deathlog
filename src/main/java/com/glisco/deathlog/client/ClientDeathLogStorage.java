@@ -28,7 +28,7 @@ public class ClientDeathLogStorage extends BaseDeathLogStorage implements Single
         this.deathInfos = new ArrayList<>();
         this.deathLogFile = FabricLoader.getInstance().getGameDir().resolve("deaths.dat").toFile();
 
-        load(deathLogFile, deathInfos);
+        load(deathLogFile, deathInfos).join();
     }
 
     @Override
