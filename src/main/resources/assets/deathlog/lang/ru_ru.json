@@ -1,0 +1,10 @@
+{
+  "deathlog.deathinfoproperty.coordinates": "Координаты",
+  "deathlog.deathinfoproperty.dimension": "Измерение",
+  "deathlog.deathinfoproperty.location": "Местоположение",
+  "deathlog.deathinfoproperty.score": "Счет",
+  "deathlog.deathinfoproperty.death_message": "Сообщение о смерти",
+  "deathlog.deathinfoproperty.time_of_death": "Время смерти",
+  "deathlog.deathinfoproperty.trinket_component": "Брелки",
+  "key.deathlog.death_screen": "Экран С журналом смерти"
+}
