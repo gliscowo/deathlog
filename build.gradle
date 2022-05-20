@@ -29,9 +29,7 @@ dependencies {
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
     // TODO change this back to 'modImplementation'
-    modCompileOnly ("dev.emi:trinkets:${project.trinkets_version}") {
-        exclude group: 'net.fabricmc.fabric-api'
-    }
+    modImplementation ("dev.emi:trinkets:${project.trinkets_version}")
 
     modCompileOnly 'me.lucko:fabric-permissions-api:0.1-SNAPSHOT'
 }
