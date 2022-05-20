@@ -47,7 +47,7 @@ public class DeathLogScreen extends Screen {
         this.addDrawableChild(deathList);
 
         this.addDrawableChild(new ButtonWidget(110 - 50, this.height - 32, 100, 20, Text.of("Done"), button -> {
-            this.onClose();
+            this.close();
         }));
 
         final TextFieldWidget searchField = new TextFieldWidget(textRenderer, 10, this.height - 95, 220, 20, Text.of(""));
@@ -73,7 +73,7 @@ public class DeathLogScreen extends Screen {
     }
 
     @Override
-    public void onClose() {
+    public void close() {
         client.setScreen(previousScreen);
     }
 

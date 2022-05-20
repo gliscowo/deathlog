@@ -34,7 +34,9 @@ public class DeathInfoPropertySerializer {
     public static Pair<DeathInfoProperty, String> load(NbtCompound propertyNbt) {
         String type = propertyNbt.getString("Type");
         String identifier = propertyNbt.getString("Identifier");
-        return new Pair<>(TYPES.get(type).readFromNbt(propertyNbt), identifier);
+
+        final var typeInstance = TYPES.containsKey(type) ? TYPES.get(type) : new MissingDeathInfoProperty.Type(identifier);
+        return new Pair<>(typeInstance.readFromNbt(propertyNbt), identifier);
     }
 
 }
