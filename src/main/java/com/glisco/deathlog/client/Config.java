@@ -5,6 +5,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.fabricmc.loader.api.FabricLoader;
 
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -29,7 +30,11 @@ public class Config {
         try (var reader = new FileReader(FabricLoader.getInstance().getConfigDir().resolve(configFileName).toFile())) {
             INSTANCE = GSON.fromJson(reader, Config.class);
         } catch (IOException e) {
-            BaseDeathLogStorage.LOGGER.warn("Could not load config", e);
+            if (e instanceof FileNotFoundException) {
+                save();
+            } else {
+                BaseDeathLogStorage.LOGGER.warn("Could not load config", e);
+            }
         }
     }
 
