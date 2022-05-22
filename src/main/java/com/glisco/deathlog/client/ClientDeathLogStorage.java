@@ -14,7 +14,6 @@ import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -25,10 +24,8 @@ public class ClientDeathLogStorage extends BaseDeathLogStorage implements Single
     private final File deathLogFile;
 
     public ClientDeathLogStorage() {
-        this.deathInfos = new ArrayList<>();
         this.deathLogFile = FabricLoader.getInstance().getGameDir().resolve("deaths.dat").toFile();
-
-        load(deathLogFile, deathInfos);
+        this.deathInfos = load(deathLogFile).join();
     }
 
     @Override
