@@ -1,9 +1,10 @@
 plugins {
     id 'fabric-loom' version '0.11-SNAPSHOT'
     id 'maven-publish'
-    id 'io.github.juuxel.loom-quiltflower' version '1.6.0'
+    id 'io.github.juuxel.loom-quiltflower' version '1.7.1'
 }
 
+// TODO fix mc dep in fmj
 version = "${project.mod_version}+${project.minecraft_base_version}"
 group = project.maven_group
 
@@ -28,8 +29,7 @@ dependencies {
     // Fabric API. This is technically optional, but you probably want it anyway.
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
-    // TODO change this back to 'modImplementation'
-    modImplementation ("dev.emi:trinkets:${project.trinkets_version}")
+//    modImplementation "dev.emi:trinkets:${project.trinkets_version}"
 
     modCompileOnly 'me.lucko:fabric-permissions-api:0.1-SNAPSHOT'
 }

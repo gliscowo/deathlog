@@ -3,7 +3,6 @@ package com.glisco.deathlog.death_info.properties;
 import com.glisco.deathlog.death_info.DeathInfoProperty;
 import com.glisco.deathlog.death_info.DeathInfoPropertyType;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 
@@ -22,7 +21,7 @@ public class CoordinatesProperty implements DeathInfoProperty {
 
     @Override
     public Text formatted() {
-        return new LiteralText("§c" + coordinates.getX() + " §a" + coordinates.getY() + " §b" + coordinates.getZ());
+        return Text.literal("§c" + coordinates.getX() + " §a" + coordinates.getY() + " §b" + coordinates.getZ());
     }
 
     @Override

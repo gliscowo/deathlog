@@ -4,7 +4,6 @@ import com.glisco.deathlog.death_info.DeathInfoPropertyType;
 import com.glisco.deathlog.death_info.RestorableDeathInfoProperty;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 
 public class ScoreProperty implements RestorableDeathInfoProperty {
@@ -29,7 +28,7 @@ public class ScoreProperty implements RestorableDeathInfoProperty {
 
     @Override
     public Text formatted() {
-        return new LiteralText(score + " §7(" + levels + " levels, " + xp + " xp)");
+        return Text.literal(score + " §7(" + levels + " levels, " + xp + " xp)");
     }
 
     @Override

@@ -8,8 +8,8 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.util.ScreenshotRecorder;
 import net.minecraft.network.packet.s2c.play.DeathMessageS2CPacket;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.MutableText;
+import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -33,7 +33,7 @@ public class ClientPlayNetworkHandlerMixin {
 
         if (Config.instance().screenshotsEnabled) {
             ScreenshotRecorder.saveScreenshot(FabricLoader.getInstance().getGameDir().toFile(), client.getFramebuffer(), text -> {
-                text = new LiteralText("§7[§bDeathLog§7] ").append(((MutableText) text).formatted(Formatting.GRAY));
+                text = Text.literal("§7[§bDeathLog§7] ").append(((MutableText) text).formatted(Formatting.GRAY));
                 client.player.sendMessage(text, false);
             });
         }

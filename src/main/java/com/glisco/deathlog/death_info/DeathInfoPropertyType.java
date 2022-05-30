@@ -3,7 +3,6 @@ package com.glisco.deathlog.death_info;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 
 public abstract class DeathInfoPropertyType<P extends DeathInfoProperty> {
@@ -17,7 +16,7 @@ public abstract class DeathInfoPropertyType<P extends DeathInfoProperty> {
     }
 
     public MutableText getName() {
-        return new TranslatableText(translationKey);
+        return Text.translatable(translationKey);
     }
 
     public static Text decorateName(MutableText name) {

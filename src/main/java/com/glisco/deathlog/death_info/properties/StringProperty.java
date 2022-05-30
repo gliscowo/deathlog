@@ -3,9 +3,7 @@ package com.glisco.deathlog.death_info.properties;
 import com.glisco.deathlog.death_info.DeathInfoProperty;
 import com.glisco.deathlog.death_info.DeathInfoPropertyType;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 
 public class StringProperty implements DeathInfoProperty {
 
@@ -24,7 +22,7 @@ public class StringProperty implements DeathInfoProperty {
 
     @Override
     public Text formatted() {
-        return new LiteralText(data);
+        return Text.literal(data);
     }
 
     @Override
@@ -40,7 +38,7 @@ public class StringProperty implements DeathInfoProperty {
 
     @Override
     public Text getName() {
-        return DeathInfoPropertyType.decorateName(new TranslatableText(translationKey));
+        return DeathInfoPropertyType.decorateName(Text.translatable(translationKey));
     }
 
     public static class Type extends DeathInfoPropertyType<StringProperty> {

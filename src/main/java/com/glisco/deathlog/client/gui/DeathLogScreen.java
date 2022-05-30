@@ -149,7 +149,7 @@ public class DeathLogScreen extends Screen {
                 client.interactionManager.dropCreativeStack(hoveredStack);
             } else {
                 final var command = new StringBuilder("/give ");
-                command.append(client.player.getName().asString());
+                command.append(client.player.getName().getString());
                 command.append(" ");
 
                 command.append(Registry.ITEM.getId(hoveredStack.getItem()));

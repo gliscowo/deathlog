@@ -11,7 +11,6 @@ import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.util.collection.DefaultedList;
 
@@ -89,12 +88,12 @@ public class DeathInfo {
 
     public Text getListName() {
         DeathInfoProperty property = getProperty(TIME_OF_DEATH_KEY).orElse(null);
-        return property == null ? new LiteralText("Time missing") : property.formatted();
+        return property == null ? Text.literal("Time missing") : property.formatted();
     }
 
     public Text getTitle() {
         DeathInfoProperty property = getProperty(DEATH_MESSAGE_KEY).orElse(null);
-        return property == null ? new LiteralText("Death message missing") : property.formatted();
+        return property == null ? Text.literal("Death message missing") : property.formatted();
     }
 
     public List<Text> getLeftColumnText() {

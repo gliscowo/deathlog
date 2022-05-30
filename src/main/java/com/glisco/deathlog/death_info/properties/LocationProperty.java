@@ -3,7 +3,6 @@ package com.glisco.deathlog.death_info.properties;
 import com.glisco.deathlog.death_info.DeathInfoProperty;
 import com.glisco.deathlog.death_info.DeathInfoPropertyType;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 
 public class LocationProperty implements DeathInfoProperty {
@@ -23,7 +22,7 @@ public class LocationProperty implements DeathInfoProperty {
 
     @Override
     public Text formatted() {
-        return new LiteralText(location + " §7(" + (multiplayer ? "Multiplayer" : "Singleplayer") + ")");
+        return Text.literal(location + " §7(" + (multiplayer ? "Multiplayer" : "Singleplayer") + ")");
     }
 
     @Override
