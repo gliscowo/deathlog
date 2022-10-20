@@ -1,5 +1,5 @@
 plugins {
-    id 'fabric-loom' version '0.11-SNAPSHOT'
+    id 'fabric-loom' version '0.12-SNAPSHOT'
     id 'maven-publish'
     id 'io.github.juuxel.loom-quiltflower' version '1.7.1'
 }
@@ -29,6 +29,7 @@ dependencies {
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
     modImplementation "dev.emi:trinkets:${project.trinkets_version}"
+    modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
 
     modCompileOnly 'me.lucko:fabric-permissions-api:0.1-SNAPSHOT'
 }

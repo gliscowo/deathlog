@@ -14,6 +14,8 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
+import java.util.List;
+
 public class DeathLogScreen extends Screen {
 
     private static final Identifier INVENTORY_TEXTURE = new Identifier("deathlog", "textures/gui/inventory_overlay.png");
@@ -46,7 +48,7 @@ public class DeathLogScreen extends Screen {
         deathList.setLeftPos(10);
         this.addDrawableChild(deathList);
 
-        this.addDrawableChild(new ButtonWidget(110 - 50, this.height - 32, 100, 20, Text.of("Done"), button -> {
+        this.addDrawableChild(new ButtonWidget(137, this.height - 32, 96, 20, Text.of("Done"), button -> {
             this.close();
         }));
 
@@ -59,17 +61,30 @@ public class DeathLogScreen extends Screen {
         searchField.setText(storage.getDefaultFilter());
 
         if (storage instanceof ClientDeathLogStorage) {
-            this.addDrawableChild(new ButtonWidget(130, 5, 100, 20, createScreenshotButtonText(), button -> {
+            this.addDrawableChild(new ButtonWidget(12, this.height - 53, 120, 20, createScreenshotButtonText(), button -> {
                 Config.instance().screenshotsEnabled = !Config.instance().screenshotsEnabled;
                 Config.save();
 
                 button.setMessage(createScreenshotButtonText());
+            }));
+
+            this.addDrawableChild(new ButtonWidget(12, this.height - 32, 120, 20, createLegacyButtonText(), button -> {
+                Config.instance().useLegacyDeathDetection = !Config.instance().useLegacyDeathDetection;
+                Config.save();
+
+                button.setMessage(createLegacyButtonText());
+            }, (button, matrices, mouseX, mouseY) -> {
+                this.renderTooltip(matrices, List.of(Text.of("Uses a less reliable but more sensitive method of detecting"), Text.of("deaths that works with protocol translators like ViaFabric")), mouseX, mouseY);
             }));
         }
     }
 
     private static Text createScreenshotButtonText() {
         return Text.of("Screenshot: " + (Config.instance().screenshotsEnabled ? "§aON" : "§cOFF"));
+    }
+
+    private static Text createLegacyButtonText() {
+        return Text.of("Legacy Detection: " + (Config.instance().useLegacyDeathDetection ? "§aON" : "§cOFF"));
     }
 
     @Override
@@ -139,7 +154,7 @@ public class DeathLogScreen extends Screen {
         }
         super.render(matrices, mouseX, mouseY, delta);
         textRenderer.draw(matrices, title, 16, 12, 0xFFFFFF);
-        textRenderer.draw(matrices, "Total Deaths: " + storage.getDeathInfoList().size(), 15, this.height - 60, 0xFFFFFF);
+        drawCenteredText(matrices, textRenderer, "Total Deaths: " + storage.getDeathInfoList().size(), 185, this.height - 48, 0xFFFFFF);
     }
 
     @Override
@@ -148,19 +163,23 @@ public class DeathLogScreen extends Screen {
             if (client.player.isCreative()) {
                 client.interactionManager.dropCreativeStack(hoveredStack);
             } else {
-                final var command = new StringBuilder("/give ");
-                command.append(client.player.getName().getString());
-                command.append(" ");
 
-                command.append(Registry.ITEM.getId(hoveredStack.getItem()));
-                command.append(hoveredStack.getOrCreateNbt().toString());
+                String command = "/give " + client.player.getName().getString() +
+                        " " +
+                        Registry.ITEM.getId(hoveredStack.getItem()) +
+                        hoveredStack.getOrCreateNbt().toString();
 
-                client.keyboard.setClipboard(command.toString());
+                client.keyboard.setClipboard(command);
             }
             return true;
         } else {
             return super.mouseClicked(mouseX, mouseY, button);
         }
+    }
+
+    @Override
+    public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
+        return super.mouseDragged(mouseX, mouseY, button, deltaX, deltaY) || this.deathList.mouseDragged(mouseX, mouseY, button, deltaX, deltaY);
     }
 
     private void renderSlotWithPossibleTooltip(MatrixStack matrices, ItemStack stack, int x, int y, int mouseX, int mouseY) {

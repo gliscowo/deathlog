@@ -18,6 +18,7 @@ public class Config {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
     public boolean screenshotsEnabled = false;
+    public boolean useLegacyDeathDetection = false;
 
     public static void load() {
         if (!Files.exists(configPath())) {
