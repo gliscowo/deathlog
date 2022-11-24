@@ -6,15 +6,15 @@ import com.glisco.deathlog.client.DeathInfo;
 import com.glisco.deathlog.storage.SingletonDeathLogStorage;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
+import net.minecraft.registry.Registries;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
-
-import java.util.List;
 
 public class DeathLogScreen extends Screen {
 
@@ -48,9 +48,12 @@ public class DeathLogScreen extends Screen {
         deathList.setLeftPos(10);
         this.addDrawableChild(deathList);
 
-        this.addDrawableChild(new ButtonWidget(137, this.height - 32, 96, 20, Text.of("Done"), button -> {
-            this.close();
-        }));
+        ;
+        this.addDrawableChild(ButtonWidget.builder(Text.of("Done"), button -> this.close())
+                .position(137, this.height - 32)
+                .size(96, 20)
+                .build()
+        );
 
         final TextFieldWidget searchField = new TextFieldWidget(textRenderer, 10, this.height - 95, 220, 20, Text.of(""));
         searchField.setChangedListener(s -> {
@@ -61,21 +64,25 @@ public class DeathLogScreen extends Screen {
         searchField.setText(storage.getDefaultFilter());
 
         if (storage instanceof ClientDeathLogStorage) {
-            this.addDrawableChild(new ButtonWidget(12, this.height - 53, 120, 20, createScreenshotButtonText(), button -> {
-                Config.instance().screenshotsEnabled = !Config.instance().screenshotsEnabled;
-                Config.save();
 
-                button.setMessage(createScreenshotButtonText());
-            }));
+            this.addDrawableChild(ButtonWidget.builder(createScreenshotButtonText(), button -> {
+                        Config.instance().screenshotsEnabled = !Config.instance().screenshotsEnabled;
+                        Config.save();
+                        button.setMessage(createScreenshotButtonText());
+                    }).position(12, this.height - 53)
+                    .size(120, 20)
+                    .build());
 
-            this.addDrawableChild(new ButtonWidget(12, this.height - 32, 120, 20, createLegacyButtonText(), button -> {
-                Config.instance().useLegacyDeathDetection = !Config.instance().useLegacyDeathDetection;
-                Config.save();
+            this.addDrawableChild(ButtonWidget.builder(createLegacyButtonText(), button -> {
+                        Config.instance().useLegacyDeathDetection = !Config.instance().useLegacyDeathDetection;
+                        Config.save();
 
-                button.setMessage(createLegacyButtonText());
-            }, (button, matrices, mouseX, mouseY) -> {
-                this.renderTooltip(matrices, List.of(Text.of("Uses a less reliable but more sensitive method of detecting"), Text.of("deaths that works with protocol translators like ViaFabric")), mouseX, mouseY);
-            }));
+                        button.setMessage(createLegacyButtonText());
+                    }).position(12, this.height - 32)
+                    .size(120, 20)
+                    .tooltip(Tooltip.of(Text.of("Uses a less reliable but more sensitive method of detecting deaths that works with protocol translators like ViaFabric")))
+                    .build()
+            );
         }
     }
 
@@ -147,7 +154,7 @@ public class DeathLogScreen extends Screen {
             if (hoveredStack != null) {
                 final var tooltip = getTooltipFromItem(hoveredStack);
                 tooltip.add(Text.of(""));
-                tooltip.add(Text.of("§7Press Mouse 3 to " + (client.player.isCreative() ? "spawn" : "copy /give")));
+                tooltip.add(Text.literal("Press Mouse 3 to " + (client.player.isCreative() ? "spawn" : "copy /give")).formatted(Formatting.GRAY));
                 renderTooltip(matrices, tooltip, mouseX, mouseY);
             }
 
@@ -166,7 +173,7 @@ public class DeathLogScreen extends Screen {
 
                 String command = "/give " + client.player.getName().getString() +
                         " " +
-                        Registry.ITEM.getId(hoveredStack.getItem()) +
+                        Registries.ITEM.getId(hoveredStack.getItem()) +
                         hoveredStack.getOrCreateNbt().toString();
 
                 client.keyboard.setClipboard(command);
