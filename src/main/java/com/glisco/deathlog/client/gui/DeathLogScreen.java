@@ -3,7 +3,7 @@ package com.glisco.deathlog.client.gui;
 import com.glisco.deathlog.client.ClientDeathLogStorage;
 import com.glisco.deathlog.client.Config;
 import com.glisco.deathlog.client.DeathInfo;
-import com.glisco.deathlog.storage.SingletonDeathLogStorage;
+import com.glisco.deathlog.storage.DirectDeathLogStorage;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
@@ -21,12 +21,12 @@ public class DeathLogScreen extends Screen {
     private static final Identifier INVENTORY_TEXTURE = new Identifier("deathlog", "textures/gui/inventory_overlay.png");
 
     private final Screen previousScreen;
-    private final SingletonDeathLogStorage storage;
+    private final DirectDeathLogStorage storage;
     private DeathListWidget deathList;
 
     private ItemStack hoveredStack = null;
 
-    public DeathLogScreen(Screen previousScreen, SingletonDeathLogStorage storage) {
+    public DeathLogScreen(Screen previousScreen, DirectDeathLogStorage storage) {
         super(Text.of("Death Log"));
         this.previousScreen = previousScreen;
         this.storage = storage;

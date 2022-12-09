@@ -6,7 +6,7 @@ import com.glisco.deathlog.mixin.MinecraftServerAccessor;
 import com.glisco.deathlog.network.DeathLogPackets;
 import com.glisco.deathlog.storage.BaseDeathLogStorage;
 import com.glisco.deathlog.storage.DeathInfoCreatedCallback;
-import com.glisco.deathlog.storage.SingletonDeathLogStorage;
+import com.glisco.deathlog.storage.DirectDeathLogStorage;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
@@ -18,7 +18,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-public class ClientDeathLogStorage extends BaseDeathLogStorage implements SingletonDeathLogStorage {
+public class ClientDeathLogStorage extends BaseDeathLogStorage implements DirectDeathLogStorage {
 
     private final List<DeathInfo> deathInfos;
     private final File deathLogFile;

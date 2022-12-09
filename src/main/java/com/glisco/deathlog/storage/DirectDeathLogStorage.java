@@ -4,7 +4,7 @@ import com.glisco.deathlog.client.DeathInfo;
 
 import java.util.List;
 
-public interface SingletonDeathLogStorage extends DeathLogStorage {
+public interface DirectDeathLogStorage extends DeathLogStorage {
 
     default List<DeathInfo> getDeathInfoList() {
         return getDeathInfoList(null);

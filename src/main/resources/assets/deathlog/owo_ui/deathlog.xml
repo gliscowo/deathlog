@@ -1,0 +1,116 @@
+<owo-ui xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/wisp-forest/owo-lib/1.19/owo-ui.xsd">
+    <components>
+        <flow-layout direction="horizontal">
+            <children>
+                <flow-layout direction="vertical">
+                    <children>
+                        <scroll direction="vertical">
+                            <flow-layout direction="vertical" id="death-list">
+                                <children/>
+                            </flow-layout>
+
+                            <padding>
+                                <all>2</all>
+                            </padding>
+
+                            <margins>
+                                <bottom>25</bottom>
+                            </margins>
+
+                            <sizing>
+                                <horizontal method="fill">100</horizontal>
+                                <vertical method="fill">100</vertical>
+                            </sizing>
+                        </scroll>
+
+                        <flow-layout direction="horizontal">
+                            <children>
+                                <texture texture="owo:textures/gui/config_search.png"
+                                         texture-width="16" texture-height="16"
+                                         region-width="16" region-height="16"/>
+
+                                <text-box id="search-box">
+                                    <sizing>
+                                        <horizontal method="fill">80</horizontal>
+                                    </sizing>
+                                    <show-background>false</show-background>
+                                </text-box>
+                            </children>
+
+                            <padding>
+                                <all>4</all>
+                            </padding>
+
+                            <sizing>
+                                <horizontal method="fill">100</horizontal>
+                            </sizing>
+
+                            <positioning type="relative">0,100</positioning>
+                            <vertical-alignment>center</vertical-alignment>
+                        </flow-layout>
+                    </children>
+
+                    <surface>
+                        <flat>#77000000</flat>
+                        <outline>#77000000</outline>
+                    </surface>
+
+                    <sizing>
+                        <horizontal method="fill">40</horizontal>
+                        <vertical method="fill">100</vertical>
+                    </sizing>
+                </flow-layout>
+
+                <flow-layout direction="vertical" id="detail-panel">
+                    <children/>
+
+                    <margins>
+                        <left>20</left>
+                    </margins>
+                </flow-layout>
+            </children>
+
+            <allow-overflow>true</allow-overflow>
+
+            <padding>
+                <all>15</all>
+            </padding>
+
+            <surface>
+                <vanilla-translucent/>
+            </surface>
+        </flow-layout>
+    </components>
+
+    <templates>
+        <death-list-entry>
+            <death-list-entry-container>
+                <children>
+                    <flow-layout direction="vertical">
+                        <children>
+                            <label>
+                                <text>{{death-time}}</text>
+                            </label>
+
+                            <label>
+                                <text>{{death-message}}</text>
+                            </label>
+                        </children>
+
+                        <padding>
+                            <all>4</all>
+                        </padding>
+                    </flow-layout>
+                </children>
+
+                <vertical-alignment>center</vertical-alignment>
+
+                <sizing>
+                    <vertical method="fixed">30</vertical>
+                    <horizontal method="fill">100</horizontal>
+                </sizing>
+            </death-list-entry-container>
+        </death-list-entry>
+    </templates>
+</owo-ui>

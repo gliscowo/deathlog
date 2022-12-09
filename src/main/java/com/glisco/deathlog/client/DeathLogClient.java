@@ -1,9 +1,9 @@
 package com.glisco.deathlog.client;
 
 import com.glisco.deathlog.DeathLogCommon;
-import com.glisco.deathlog.client.gui.DeathLogScreen;
+import com.glisco.deathlog.client.gui.BasedDeathLogScreen;
 import com.glisco.deathlog.network.DeathLogPackets;
-import com.glisco.deathlog.storage.SingletonDeathLogStorage;
+import com.glisco.deathlog.storage.DirectDeathLogStorage;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -48,17 +48,17 @@ public class DeathLogClient implements ClientModInitializer {
         Config.load();
     }
 
-    private void openScreen(SingletonDeathLogStorage clientStorage) {
+    private void openScreen(DirectDeathLogStorage clientStorage) {
         openScreen(clientStorage, MinecraftClient.getInstance().getCurrentServerEntry() == null);
     }
 
-    public static void openScreen(SingletonDeathLogStorage storage, boolean canRestore) {
-        final var screen = new DeathLogScreen(MinecraftClient.getInstance().currentScreen, storage);
+    public static void openScreen(DirectDeathLogStorage storage, boolean canRestore) {
+        final var screen = new BasedDeathLogScreen(MinecraftClient.getInstance().currentScreen, storage);
         MinecraftClient.getInstance().setScreen(screen);
-        if (!canRestore) screen.disableRestore();
+//        if (!canRestore) screen.disableRestore();
     }
 
-    public static SingletonDeathLogStorage getClientStorage() {
+    public static DirectDeathLogStorage getClientStorage() {
         return storage;
     }
 }

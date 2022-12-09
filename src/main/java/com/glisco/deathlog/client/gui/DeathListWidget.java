@@ -2,7 +2,7 @@ package com.glisco.deathlog.client.gui;
 
 import com.glisco.deathlog.client.DeathInfo;
 import com.glisco.deathlog.network.RemoteDeathLogStorage;
-import com.glisco.deathlog.storage.SingletonDeathLogStorage;
+import com.glisco.deathlog.storage.DirectDeathLogStorage;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.widget.AlwaysSelectedEntryListWidget;
 import org.jetbrains.annotations.Nullable;
@@ -11,11 +11,11 @@ import java.util.Objects;
 
 public class DeathListWidget extends AlwaysSelectedEntryListWidget<DeathListEntry> {
 
-    private final SingletonDeathLogStorage storage;
+    private final DirectDeathLogStorage storage;
     private String filter;
     public boolean restoreEnabled;
 
-    public DeathListWidget(MinecraftClient client, int width, int height, int top, int bottom, int itemHeight, SingletonDeathLogStorage storage) {
+    public DeathListWidget(MinecraftClient client, int width, int height, int top, int bottom, int itemHeight, DirectDeathLogStorage storage) {
         super(client, width, height, top, bottom, itemHeight);
 
         this.storage = storage;

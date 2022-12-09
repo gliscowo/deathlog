@@ -2,7 +2,7 @@ package com.glisco.deathlog.network;
 
 import com.glisco.deathlog.client.DeathInfo;
 import com.glisco.deathlog.storage.BaseDeathLogStorage;
-import com.glisco.deathlog.storage.SingletonDeathLogStorage;
+import com.glisco.deathlog.storage.DirectDeathLogStorage;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.text.Text;
@@ -11,7 +11,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.UUID;
 
-public class RemoteDeathLogStorage extends BaseDeathLogStorage implements SingletonDeathLogStorage {
+public class RemoteDeathLogStorage extends BaseDeathLogStorage implements DirectDeathLogStorage {
 
     private final List<DeathInfo> deathInfoList;
     private final UUID profileId;
