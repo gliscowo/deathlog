@@ -30,7 +30,7 @@ public class TrinketComponentProperty implements RestorableDeathInfoProperty {
 
     @Override
     public Text formatted() {
-        return Text.literal("§b" + trinkets.size() + "§r items");
+        return Text.translatable("deathlog.deathinfoproperty.trinket_component.value", trinkets.size());
     }
 
     @Override

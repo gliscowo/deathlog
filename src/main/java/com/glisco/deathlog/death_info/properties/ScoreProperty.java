@@ -28,7 +28,10 @@ public class ScoreProperty implements RestorableDeathInfoProperty {
 
     @Override
     public Text formatted() {
-        return Text.literal(score + " §7(" + levels + " levels, " + xp + " xp)");
+        return Text.translatable(
+                "deathlog.deathinfoproperty.score.value",
+                score, levels, xp
+        );
     }
 
     @Override

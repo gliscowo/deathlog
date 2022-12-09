@@ -1,10 +1,33 @@
 <owo-ui xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/wisp-forest/owo-lib/1.19/owo-ui.xsd">
+        xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/wisp-forest/owo-lib/1.19.3/owo-ui.xsd">
     <components>
         <flow-layout direction="horizontal">
             <children>
                 <flow-layout direction="vertical">
                     <children>
+                        <flow-layout direction="horizontal">
+                            <children>
+                                <label id="death-count-label">
+                                    <shadow>true</shadow>
+                                </label>
+                            </children>
+
+                            <surface>
+                                <flat>#77000000</flat>
+                            </surface>
+
+                            <padding>
+                                <all>5</all>
+                            </padding>
+
+                            <horizontal-alignment>center</horizontal-alignment>
+
+                            <sizing>
+                                <horizontal method="fill">100</horizontal>
+                            </sizing>
+                            <positioning type="relative">0,0</positioning>
+                        </flow-layout>
+
                         <scroll direction="vertical">
                             <flow-layout direction="vertical" id="death-list">
                                 <children/>
@@ -15,6 +38,7 @@
                             </padding>
 
                             <margins>
+                                <top>17</top>
                                 <bottom>25</bottom>
                             </margins>
 
@@ -63,12 +87,37 @@
                 </flow-layout>
 
                 <flow-layout direction="vertical" id="detail-panel">
-                    <children/>
+                    <children>
+                        <flow-layout direction="vertical">
+                            <children>
+                                <label>
+                                    <text translate="true">text.deathlog.no_info_selected_hint</text>
+                                    <horizontal-text-alignment>center</horizontal-text-alignment>
+                                </label>
+                            </children>
+
+                            <sizing>
+                                <vertical method="fill">100</vertical>
+                            </sizing>
+
+                            <vertical-alignment>center</vertical-alignment>
+                        </flow-layout>
+                    </children>
 
                     <margins>
                         <left>20</left>
                     </margins>
                 </flow-layout>
+
+                <button id="config-button">
+                    <text translate="true">text.deathlog.config</text>
+                    <renderer>
+                        <flat color="#77000000" hovered-color="#77afafaf" disabled-color="black"/>
+                    </renderer>
+                    <sizing>
+                        <vertical method="fixed">16</vertical>
+                    </sizing>
+                </button>
             </children>
 
             <allow-overflow>true</allow-overflow>
@@ -91,10 +140,12 @@
                         <children>
                             <label>
                                 <text>{{death-time}}</text>
+                                <cursor-style>hand</cursor-style>
                             </label>
 
                             <label>
                                 <text>{{death-message}}</text>
+                                <cursor-style>hand</cursor-style>
                             </label>
                         </children>
 

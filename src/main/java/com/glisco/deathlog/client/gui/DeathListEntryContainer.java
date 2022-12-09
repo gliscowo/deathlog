@@ -1,9 +1,12 @@
 package com.glisco.deathlog.client.gui;
 
 import io.wispforest.owo.ui.container.HorizontalFlowLayout;
+import io.wispforest.owo.ui.core.Animation;
 import io.wispforest.owo.ui.core.Easing;
+import io.wispforest.owo.ui.core.Insets;
 import io.wispforest.owo.ui.core.Sizing;
 import io.wispforest.owo.ui.util.Drawer;
+import io.wispforest.owo.ui.util.UISounds;
 import io.wispforest.owo.util.EventSource;
 import io.wispforest.owo.util.EventStream;
 import net.minecraft.client.util.math.MatrixStack;
@@ -12,14 +15,14 @@ import org.lwjgl.glfw.GLFW;
 public class DeathListEntryContainer extends HorizontalFlowLayout {
 
     protected final EventStream<OnSelected> selectedEvents = OnSelected.newStream();
+    protected final Animation<Insets> slideAnimation;
+
+    protected boolean focused = false;
     protected boolean selected = false;
 
     public DeathListEntryContainer() {
         super(Sizing.content(), Sizing.content());
-
-        var slideAnimation = this.padding.animate(150, Easing.QUADRATIC, this.padding.get().add(0, 0, 6, 0));
-        this.mouseEnter().subscribe(slideAnimation::forwards);
-        this.mouseLeave().subscribe(slideAnimation::backwards);
+        this.slideAnimation = this.padding.animate(150, Easing.QUADRATIC, this.padding.get().add(0, 0, 5, 0));
     }
 
     public EventSource<OnSelected> onSelected() {
@@ -33,11 +36,24 @@ public class DeathListEntryContainer extends HorizontalFlowLayout {
     }
 
     @Override
-    public boolean onMouseDown(double mouseX, double mouseY, int button) {
-        super.onMouseDown(mouseX, mouseY, button);
+    protected void parentUpdate(float delta, int mouseX, int mouseY) {
+        if (this.hovered || this.focused || this.selected) {
+            this.slideAnimation.forwards();
+        } else {
+            this.slideAnimation.backwards();
+        }
+    }
 
-        this.select();
-        return true;
+    @Override
+    public boolean onMouseDown(double mouseX, double mouseY, int button) {
+        if (button == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
+            super.onMouseDown(mouseX, mouseY, button);
+
+            this.select();
+            return true;
+        } else {
+            return super.onMouseDown(mouseX, mouseY, button);
+        }
     }
 
     @Override
@@ -60,11 +76,25 @@ public class DeathListEntryContainer extends HorizontalFlowLayout {
 
         this.selected = true;
         this.selectedEvents.sink().onSelected(this);
+
+        UISounds.playInteractionSound();
     }
 
     @Override
     public boolean canFocus(FocusSource source) {
-        return source == FocusSource.KEYBOARD_CYCLE;
+        return true;
+    }
+
+    @Override
+    public void onFocusGained(FocusSource source) {
+        super.onFocusGained(source);
+        this.focused = true;
+    }
+
+    @Override
+    public void onFocusLost() {
+        super.onFocusLost();
+        this.focused = false;
     }
 
     public interface OnSelected {

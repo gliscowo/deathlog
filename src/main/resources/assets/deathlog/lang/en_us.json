@@ -1,10 +1,51 @@
 {
   "deathlog.deathinfoproperty.coordinates": "Coordinates",
+  "deathlog.deathinfoproperty.coordinates.value": [
+    {"index": 0, "color": "red"},
+    " ",
+    {"index": 1, "color": "green"},
+    " ",
+    {"index": 2, "color": "aqua"}
+  ],
   "deathlog.deathinfoproperty.dimension": "Dimension",
+  "deathlog.deathinfoproperty.location.singleplayer": "Singleplayer",
+  "deathlog.deathinfoproperty.location.multiplayer": "Multiplayer",
   "deathlog.deathinfoproperty.location": "Location",
+  "deathlog.deathinfoproperty.location.value": [
+    {"index": 0},
+    {"text": " (", "color": "gray"},
+    {"index": 1, "color": "gray"},
+    {"text": ")", "color": "gray"}
+  ],
   "deathlog.deathinfoproperty.score": "Score",
+  "deathlog.deathinfoproperty.score.value": [
+    {"index": 0},
+    {"text": " (", "color": "gray"},
+    {"index": 1, "color": "gray"},
+    {"text": " levels, ", "color": "gray"},
+    {"index": 2, "color": "gray"},
+    {"text": " xp)", "color": "gray"}
+  ],
   "deathlog.deathinfoproperty.death_message": "Death Message",
   "deathlog.deathinfoproperty.time_of_death": "Time of Death",
   "deathlog.deathinfoproperty.trinket_component": "Trinkets",
-  "key.deathlog.death_screen": "Death Log Screen"
+  "deathlog.deathinfoproperty.trinket_component.value": [
+    "",
+    {"index": 0, "color": "aqua"},
+    " items"
+  ],
+  "key.deathlog.death_screen": "Death Log Screen",
+
+  "text.deathlog.death_list_title": "DeathLog - %s total",
+  "text.deathlog.no_info_selected_hint": "Select a death info from\nthe list to get started",
+
+  "text.deathlog.config": "⇄ Config",
+  "text.config.deathlog.title": "DeathLog Configuration",
+  "text.config.deathlog.option.screenshotsEnabled": "Screenshot on death",
+  "text.config.deathlog.option.useLegacyDeathDetection": "Use legacy death detection",
+  "text.config.deathlog.option.useLegacyDeathDetection.tooltip": [
+    "Uses a less reliable but more sensitive\n",
+    "method of detecting deaths that works\n",
+    "with protocol translators like ViaFabric"
+  ]
 }

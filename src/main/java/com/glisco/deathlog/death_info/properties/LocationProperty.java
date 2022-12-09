@@ -22,7 +22,12 @@ public class LocationProperty implements DeathInfoProperty {
 
     @Override
     public Text formatted() {
-        return Text.literal(location + " §7(" + (multiplayer ? "Multiplayer" : "Singleplayer") + ")");
+        return Text.translatable(
+                "deathlog.deathinfoproperty.location.value", location,
+                multiplayer
+                        ? Text.translatable("deathlog.deathinfoproperty.location.multiplayer")
+                        : Text.translatable("deathlog.deathinfoproperty.location.singleplayer")
+        );
     }
 
     @Override
