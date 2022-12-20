@@ -73,7 +73,7 @@ public class DeathLogClient implements ClientModInitializer {
     public static void openScreen(DirectDeathLogStorage storage, boolean canRestore) {
         final var screen = new DeathLogScreen(MinecraftClient.getInstance().currentScreen, storage);
         MinecraftClient.getInstance().setScreen(screen);
-//        if (!canRestore) screen.disableRestore();
+        if (!canRestore) screen.disableRestoring();
     }
 
     public static DirectDeathLogStorage getClientStorage() {

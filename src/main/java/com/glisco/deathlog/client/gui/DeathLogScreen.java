@@ -35,6 +35,7 @@ public class DeathLogScreen extends BaseUIModelScreen<FlowLayout> {
     private DropdownComponent activeDropdown = null;
 
     private final Observable<String> currentSearchTerm = Observable.of("");
+    private boolean canRestore = true;
     private DeathInfo selectedInfo = null;
 
     public DeathLogScreen(Screen parent, DirectDeathLogStorage storage) {
@@ -87,6 +88,10 @@ public class DeathLogScreen extends BaseUIModelScreen<FlowLayout> {
         this.selectInfo(this.storage.getDeathInfoList().get(index));
     }
 
+    public void disableRestoring() {
+        this.canRestore = false;
+    }
+
     private void buildDeathList() {
         this.uiAdapter.rootComponent.childById(FlowLayout.class, "death-list").<FlowLayout>configure(deathList -> {
             deathList.clearChildren();
@@ -96,7 +101,7 @@ public class DeathLogScreen extends BaseUIModelScreen<FlowLayout> {
                 var deathInfo = this.storage.getDeathInfoList().get(infoIndex);
 
                 if (!this.currentSearchTerm.get().isBlank() && !deathInfo.createSearchString().contains(this.currentSearchTerm.get())) {
-                    return;
+                    continue;
                 }
 
                 deathList.child(this.model.expandTemplate(
@@ -115,23 +120,27 @@ public class DeathLogScreen extends BaseUIModelScreen<FlowLayout> {
                         if (button != GLFW.GLFW_MOUSE_BUTTON_RIGHT) return false;
 
                         this.uiAdapter.rootComponent.removeChild(this.activeDropdown);
-                        this.uiAdapter.rootComponent.child(
-                                (this.activeDropdown = Components.dropdown(Sizing.content())
-                                        .button(Text.literal("Restore"), dropdown -> {
-                                            this.storage.restore(this.storage.getDeathInfoList().indexOf(deathInfo));
-                                            this.removeDropdown();
-                                        })
-                                        .button(Text.literal("Delete").formatted(Formatting.RED), dropdown -> {
-                                            this.storage.delete(deathInfo);
-                                            this.buildDeathList();
-                                            this.removeDropdown();
-                                        }))
-                                        .surface(Surface.flat(0xBB000000))
-                                        .positioning(Positioning.absolute(
-                                                container.x() + (int) mouseX - this.uiAdapter.rootComponent.padding().get().left(),
-                                                container.y() + (int) mouseY - this.uiAdapter.rootComponent.padding().get().top()
-                                        ))
-                        );
+                        this.uiAdapter.rootComponent.child(Components.dropdown(Sizing.content()).<DropdownComponent>configure(dropdown -> {
+                            this.activeDropdown = dropdown;
+
+                            if (this.canRestore) {
+                                dropdown.button(Text.literal("Restore"), dropdown_ -> {
+                                    this.storage.restore(this.storage.getDeathInfoList().indexOf(deathInfo));
+                                    this.removeDropdown();
+                                });
+                            }
+
+                            dropdown.button(Text.literal("Delete").formatted(Formatting.RED), dropdown_ -> {
+                                        this.storage.delete(deathInfo);
+                                        this.buildDeathList();
+                                        this.removeDropdown();
+                                    })
+                                    .surface(Surface.flat(0xBB000000))
+                                    .positioning(Positioning.absolute(
+                                            container.x() + (int) mouseX - this.uiAdapter.rootComponent.padding().get().left(),
+                                            container.y() + (int) mouseY - this.uiAdapter.rootComponent.padding().get().top()
+                                    ));
+                        }));
 
                         return true;
                     });
