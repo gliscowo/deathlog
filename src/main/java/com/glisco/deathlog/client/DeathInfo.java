@@ -88,12 +88,12 @@ public class DeathInfo {
 
     public Text getListName() {
         DeathInfoProperty property = getProperty(TIME_OF_DEATH_KEY).orElse(null);
-        return property == null ? Text.literal("Time missing") : property.formatted();
+        return property == null ? Text.translatable("text.deathlog.info.time_missing") : property.formatted();
     }
 
     public Text getTitle() {
         DeathInfoProperty property = getProperty(DEATH_MESSAGE_KEY).orElse(null);
-        return property == null ? Text.literal("Death message missing") : property.formatted();
+        return property == null ? Text.translatable("text.deathlog.info.death_message_missing") : property.formatted();
     }
 
     public List<Text> getLeftColumnText() {

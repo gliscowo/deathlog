@@ -19,7 +19,6 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import org.lwjgl.glfw.GLFW;
 
@@ -36,7 +35,6 @@ public class DeathLogScreen extends BaseUIModelScreen<FlowLayout> {
 
     private final Observable<String> currentSearchTerm = Observable.of("");
     private boolean canRestore = true;
-    private DeathInfo selectedInfo = null;
 
     public DeathLogScreen(Screen parent, DirectDeathLogStorage storage) {
         super(FlowLayout.class, DataSource.file("../src/main/resources/assets/deathlog/owo_ui/deathlog.xml"));
@@ -124,13 +122,13 @@ public class DeathLogScreen extends BaseUIModelScreen<FlowLayout> {
                             this.activeDropdown = dropdown;
 
                             if (this.canRestore) {
-                                dropdown.button(Text.literal("Restore"), dropdown_ -> {
+                                dropdown.button(Text.translatable("text.deathlog.action.restore"), dropdown_ -> {
                                     this.storage.restore(this.storage.getDeathInfoList().indexOf(deathInfo));
                                     this.removeDropdown();
                                 });
                             }
 
-                            dropdown.button(Text.literal("Delete").formatted(Formatting.RED), dropdown_ -> {
+                            dropdown.button(Text.translatable("text.deathlog.action.delete"), dropdown_ -> {
                                         this.storage.delete(deathInfo);
                                         this.buildDeathList();
                                         this.removeDropdown();
@@ -150,14 +148,13 @@ public class DeathLogScreen extends BaseUIModelScreen<FlowLayout> {
     }
 
     private void selectInfo(DeathInfo info) {
-        this.selectedInfo = info;
         if (this.storage instanceof RemoteDeathLogStorage remoteStorage) remoteStorage.fetchCompleteInfo(info);
 
         this.detailPanel.<FlowLayout>configure(panel -> {
             panel.clearChildren();
 
             if (info.isPartial()) {
-                panel.child(Components.label(Text.literal("Loading...")).margins(Insets.top(15)));
+                panel.child(Components.label(Text.translatable("text.deathlog.death_info_loading")).margins(Insets.top(15)));
                 return;
             }
 

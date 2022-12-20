@@ -36,7 +36,14 @@
   ],
   "key.deathlog.death_screen": "Death Log Screen",
 
+  "text.deathlog.action.restore": "Restore",
+  "text.deathlog.action.delete": {"text": "Delete", "color": "red"},
+
+  "text.deathlog.info.time_missing": "Time missing",
+  "text.deathlog.info.death_message_missing": "Death message missing",
+
   "text.deathlog.death_list_title": "DeathLog - %s total",
+  "text.deathlog.death_info_loading": "Loading...",
   "text.deathlog.no_info_selected_hint": "Select a death info from\nthe list to get started",
 
   "text.deathlog.config": "⇄ Config",
