@@ -8,9 +8,9 @@
     "glisco"
   ],
   "contact": {
-    "issues": "https://github.com/glisco03/deathlog/issues",
-    "sources": "https://github.com/glisco03/deathlog",
-    "homepage": "https://www.curseforge.com/minecraft/mc-mods/deathlog"
+    "issues": "https://github.com/gliscowo/deathlog/issues",
+    "sources": "https://github.com/gliscowo/deathlog",
+    "homepage": "https://modrinth.com/mod/deathlog"
   },
   "license": "MIT",
   "icon": "assets/deathlog/icon.png",
@@ -32,7 +32,8 @@
   "depends": {
     "fabricloader": "*",
     "fabric": "*",
-    "minecraft": ">=1.19"
+    "minecraft": ">=1.19.3",
+    "owo-lib": ">=0.9.3"
   },
   "suggests": {
     "trinkets": ">=3.4.0"

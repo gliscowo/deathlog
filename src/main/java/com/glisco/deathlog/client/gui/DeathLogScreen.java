@@ -217,7 +217,7 @@ public class DeathLogScreen extends BaseUIModelScreen<FlowLayout> {
         if (!stack.isEmpty()) {
             item.tooltip(stack.getTooltip(
                     client.player,
-                    client.options.advancedItemTooltips ? TooltipContext.Default.ADVANCED : TooltipContext.Default.NORMAL
+                    client.options.advancedItemTooltips ? TooltipContext.Default.ADVANCED : TooltipContext.Default.BASIC
             ));
         }
 

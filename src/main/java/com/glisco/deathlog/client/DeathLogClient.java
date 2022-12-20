@@ -51,9 +51,9 @@ public class DeathLogClient implements ClientModInitializer {
 
         ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
             if (!(screen instanceof StatsScreen)) return;
-            Screens.getButtons(screen).add(new ButtonWidget(10, 5, 60, 20, Text.of("DeathLog"), button -> {
+            Screens.getButtons(screen).add(ButtonWidget.builder(Text.of("DeathLog"), button -> {
                 openScreen(getClientStorage());
-            }));
+            }).size(60, 20).position(10, 5).build());
         });
 
         KeyBindingHelper.registerKeyBinding(OPEN_DEATH_SCREEN);
