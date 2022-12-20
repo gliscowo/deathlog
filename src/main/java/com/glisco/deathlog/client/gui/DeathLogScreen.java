@@ -123,7 +123,7 @@ public class DeathLogScreen extends BaseUIModelScreen<FlowLayout> {
 
                             if (this.canRestore) {
                                 dropdown.button(Text.translatable("text.deathlog.action.restore"), dropdown_ -> {
-                                    this.storage.restore(this.storage.getDeathInfoList().indexOf(deathInfo));
+                                    this.storage.restore(infoIndex);
                                     this.removeDropdown();
                                 });
                             }
