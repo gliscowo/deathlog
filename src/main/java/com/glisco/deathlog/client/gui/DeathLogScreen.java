@@ -37,7 +37,7 @@ public class DeathLogScreen extends BaseUIModelScreen<FlowLayout> {
     private boolean canRestore = true;
 
     public DeathLogScreen(Screen parent, DirectDeathLogStorage storage) {
-        super(FlowLayout.class, DataSource.file("../src/main/resources/assets/deathlog/owo_ui/deathlog.xml"));
+        super(FlowLayout.class, DataSource.asset(new Identifier("deathlog", "deathlog")));
         this.parent = parent;
         this.storage = storage;
 
