@@ -37,6 +37,8 @@
   "key.deathlog.death_screen": "Death Log Screen",
 
   "text.deathlog.action.restore": "Restore",
+  "text.deathlog.action.give_item.spawn": {"text": "Press Mouse 3 to spawn", "color": "gray"},
+  "text.deathlog.action.give_item.copy_give": {"text": "Press Mouse 3 to copy /give", "color": "gray"},
   "text.deathlog.action.delete": {"text": "Delete", "color": "red"},
 
   "text.deathlog.info.time_missing": "Time missing",

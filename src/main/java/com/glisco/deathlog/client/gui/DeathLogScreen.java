@@ -18,6 +18,7 @@ import io.wispforest.owo.util.Observable;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.ItemStack;
+import net.minecraft.registry.Registries;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import org.lwjgl.glfw.GLFW;
@@ -215,10 +216,27 @@ public class DeathLogScreen extends BaseUIModelScreen<FlowLayout> {
         item.margins(margins);
 
         if (!stack.isEmpty()) {
-            item.tooltip(stack.getTooltip(
-                    client.player,
-                    client.options.advancedItemTooltips ? TooltipContext.Default.ADVANCED : TooltipContext.Default.BASIC
-            ));
+            var tooltip = stack.getTooltip(client.player, client.options.advancedItemTooltips ? TooltipContext.Default.ADVANCED : TooltipContext.Default.BASIC);
+            tooltip.add(Text.translatable(this.client.player.isCreative() ? "text.deathlog.action.give_item.spawn" : "text.deathlog.action.give_item.copy_give"));
+            item.tooltip(tooltip);
+
+            item.mouseDown().subscribe((mouseX, mouseY, button) -> {
+                if (button != GLFW.GLFW_MOUSE_BUTTON_MIDDLE) return false;
+
+                if (this.client.player.isCreative()) {
+                    this.client.interactionManager.dropCreativeStack(stack);
+                } else {
+
+                    String command = "/give " + client.player.getName().getString() +
+                            " " +
+                            Registries.ITEM.getId(stack.getItem()) +
+                            stack.getOrCreateNbt().toString();
+
+                    this.client.keyboard.setClipboard(command);
+                }
+
+                return true;
+            });
         }
 
         return item;
