@@ -32,7 +32,6 @@ public class DeathLogScreen extends BaseUIModelScreen<FlowLayout> {
     private final DirectDeathLogStorage storage;
 
     private FlowLayout detailPanel;
-    private DropdownComponent activeDropdown = null;
 
     private final Observable<String> currentSearchTerm = Observable.of("");
     private boolean canRestore = true;
@@ -118,28 +117,29 @@ public class DeathLogScreen extends BaseUIModelScreen<FlowLayout> {
                     container.mouseDown().subscribe((mouseX, mouseY, button) -> {
                         if (button != GLFW.GLFW_MOUSE_BUTTON_RIGHT) return false;
 
-                        this.uiAdapter.rootComponent.removeChild(this.activeDropdown);
-                        this.uiAdapter.rootComponent.child(Components.dropdown(Sizing.content()).<DropdownComponent>configure(dropdown -> {
-                            this.activeDropdown = dropdown;
+                        var root = this.uiAdapter.rootComponent;
+                        DropdownComponent.openContextMenu(
+                                this,
+                                root, FlowLayout::child,
+                                container.x() - root.padding().get().left() + mouseX,
+                                container.y() - root.padding().get().top() + mouseY,
+                                dropdown -> {
+                                    dropdown.surface(Surface.flat(0xBB000000).and(Surface.outline(0xA75F5F5F)));
 
-                            if (this.canRestore) {
-                                dropdown.button(Text.translatable("text.deathlog.action.restore"), dropdown_ -> {
-                                    this.storage.restore(infoIndex);
-                                    this.removeDropdown();
-                                });
-                            }
+                                    if (this.canRestore) {
+                                        dropdown.button(Text.translatable("text.deathlog.action.restore"), dropdown_ -> {
+                                            this.storage.restore(infoIndex);
+                                            dropdown.remove();
+                                        });
+                                    }
 
-                            dropdown.button(Text.translatable("text.deathlog.action.delete"), dropdown_ -> {
+                                    dropdown.button(Text.translatable("text.deathlog.action.delete"), dropdown_ -> {
                                         this.storage.delete(deathInfo);
                                         this.buildDeathList();
-                                        this.removeDropdown();
-                                    })
-                                    .surface(Surface.flat(0xBB000000))
-                                    .positioning(Positioning.absolute(
-                                            container.x() + (int) mouseX - this.uiAdapter.rootComponent.padding().get().left(),
-                                            container.y() + (int) mouseY - this.uiAdapter.rootComponent.padding().get().top()
-                                    ));
-                        }));
+                                        dropdown.remove();
+                                    });
+                                }
+                        );
 
                         return true;
                     });
@@ -240,20 +240,6 @@ public class DeathLogScreen extends BaseUIModelScreen<FlowLayout> {
         }
 
         return item;
-    }
-
-    private void removeDropdown() {
-        this.uiAdapter.rootComponent.removeChild(this.activeDropdown);
-        this.activeDropdown = null;
-    }
-
-    @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (this.activeDropdown != null && !this.activeDropdown.isInBoundingBox(mouseX, mouseY)) {
-            this.removeDropdown();
-        }
-
-        return super.mouseClicked(mouseX, mouseY, button);
     }
 
     @Override
