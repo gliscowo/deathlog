@@ -1,0 +1,58 @@
+{
+  "deathlog.deathinfoproperty.coordinates": "座標",
+  "deathlog.deathinfoproperty.coordinates.value": [
+    {"index": 0, "color": "red"},
+    " ",
+    {"index": 1, "color": "green"},
+    " ",
+    {"index": 2, "color": "aqua"}
+  ],
+  "deathlog.deathinfoproperty.dimension": "維度",
+  "deathlog.deathinfoproperty.location.singleplayer": "單人遊戲",
+  "deathlog.deathinfoproperty.location.multiplayer": "多人遊戲",
+  "deathlog.deathinfoproperty.location": "Location",
+  "deathlog.deathinfoproperty.location.value": [
+    {"index": 0},
+    {"text": "（", "color": "gray"},
+    {"index": 1, "color": "gray"},
+    {"text": "）", "color": "gray"}
+  ],
+  "deathlog.deathinfoproperty.score": "分數",
+  "deathlog.deathinfoproperty.score.value": [
+    {"index": 0},
+    {"text": "（", "color": "gray"},
+    {"index": 1, "color": "gray"},
+    {"text": "等級、", "color": "gray"},
+    {"index": 2, "color": "gray"},
+    {"text": "經驗值）", "color": "gray"}
+  ],
+  "deathlog.deathinfoproperty.death_message": "死亡訊息",
+  "deathlog.deathinfoproperty.time_of_death": "死亡時間",
+  "deathlog.deathinfoproperty.trinket_component": "小飾品",
+  "deathlog.deathinfoproperty.trinket_component.value": [
+    "",
+    {"index": 0, "color": "aqua"},
+    " 物品"
+  ],
+  "key.deathlog.death_screen": "Death Log 畫面",
+
+  "text.deathlog.action.restore": "恢復",
+  "text.deathlog.action.delete": {"text": "刪除", "color": "red"},
+
+  "text.deathlog.info.time_missing": "時間遺失",
+  "text.deathlog.info.death_message_missing": "死亡訊息遺失",
+
+  "text.deathlog.death_list_title": "DeathLog - 總共 %s",
+  "text.deathlog.death_info_loading": "載入中...",
+  "text.deathlog.no_info_selected_hint": "從列表中選擇死亡紀錄\n開始查看",
+
+  "text.deathlog.config": "⇄ 設定",
+  "text.config.deathlog.title": "DeathLog 設定",
+  "text.config.deathlog.option.screenshotsEnabled": "在死亡時截圖",
+  "text.config.deathlog.option.useLegacyDeathDetection": "使用以前的死亡偵測",
+  "text.config.deathlog.option.useLegacyDeathDetection.tooltip": [
+    "使用不太可靠但更敏感\n",
+    "檢測死亡的有效方法\n",
+    "使用像 ViaFabric 這樣的協議轉換器"
+  ]
+}
