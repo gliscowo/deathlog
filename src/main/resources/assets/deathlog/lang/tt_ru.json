@@ -1,0 +1,60 @@
+{
+  "deathlog.deathinfoproperty.coordinates": "Координаталар",
+  "deathlog.deathinfoproperty.coordinates.value": [
+    {"index": 0, "color": "red"},
+    " ",
+    {"index": 1, "color": "green"},
+    " ",
+    {"index": 2, "color": "aqua"}
+  ],
+  "deathlog.deathinfoproperty.dimension": "Киңлек",
+  "deathlog.deathinfoproperty.location.singleplayer": "Берлек уен",
+  "deathlog.deathinfoproperty.location.multiplayer": "Челтәр уен",
+  "deathlog.deathinfoproperty.location": "Урын",
+  "deathlog.deathinfoproperty.location.value": [
+    {"index": 0},
+    {"text": " (", "color": "gray"},
+    {"index": 1, "color": "gray"},
+    {"text": ")", "color": "gray"}
+  ],
+  "deathlog.deathinfoproperty.score": "Исәп",
+  "deathlog.deathinfoproperty.score.value": [
+    {"index": 0},
+    {"text": " (", "color": "gray"},
+    {"index": 1, "color": "gray"},
+    {"text": " дәрәҗә, ", "color": "gray"},
+    {"index": 2, "color": "gray"},
+    {"text": " тәҗрибә)", "color": "gray"}
+  ],
+  "deathlog.deathinfoproperty.death_message": "Үлем хәбәре",
+  "deathlog.deathinfoproperty.time_of_death": "Үлем вакыты",
+  "deathlog.deathinfoproperty.trinket_component": "Инвентарь",
+  "deathlog.deathinfoproperty.trinket_component.value": [
+    "",
+    {"index": 0, "color": "aqua"},
+    " предмет"
+  ],
+  "key.deathlog.death_screen": "Үлем журналының экраны",
+
+  "text.deathlog.action.restore": "Тергезү",
+  "text.deathlog.action.give_item.spawn": {"text": "Чакыру өчен Тычкан 3 басыгыз", "color": "gray"},
+  "text.deathlog.action.give_item.copy_give": {"text": "/give күчереп алу өчен Тычкан 3 басыгыз", "color": "gray"},
+  "text.deathlog.action.delete": {"text": "Бетерү", "color": "red"},
+
+  "text.deathlog.info.time_missing": "Вакыт югалтылды",
+  "text.deathlog.info.death_message_missing": "Үлем хәбәре югалтылды",
+
+  "text.deathlog.death_list_title": "Үлем журналы - %s барлыгы",
+  "text.deathlog.death_info_loading": "Йөкләү...",
+  "text.deathlog.no_info_selected_hint": "Башлау өчен исемлектагы үлем мәгълүматын сайлагыз",
+
+  "text.deathlog.config": "⇄ Көйләү",
+  "text.config.deathlog.title": "DeathLog көйләүләре",
+  "text.config.deathlog.option.screenshotsEnabled": "Үлгәндә экран сурәте",
+  "text.config.deathlog.option.useLegacyDeathDetection": "Элекке үлем белүне алырга",
+  "text.config.deathlog.option.useLegacyDeathDetection.tooltip": [
+    "ViaFabric кебек беркетмәләрне тәрҗемәчеләр белән\n",
+    "эшләүче үлемнәрне ачыклау буенча ышанычлырак,\n",
+    "әмма сизгеррәк метод кулланыла."
+  ]
+}
