@@ -28,7 +28,7 @@
   ],
   "deathlog.deathinfoproperty.death_message": "Үлем хәбәре",
   "deathlog.deathinfoproperty.time_of_death": "Үлем вакыты",
-  "deathlog.deathinfoproperty.trinket_component": "Инвентарь",
+  "deathlog.deathinfoproperty.trinket_component": "Аксессуар",
   "deathlog.deathinfoproperty.trinket_component.value": [
     "",
     {"index": 0, "color": "aqua"},
