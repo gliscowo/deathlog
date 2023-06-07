@@ -3,6 +3,7 @@ package com.glisco.deathlog.mixin;
 import com.glisco.deathlog.client.DeathLogClient;
 import com.glisco.deathlog.client.gui.DeathLogToast;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.client.toast.SystemToast;
 import net.minecraft.client.util.math.MatrixStack;
@@ -20,7 +21,7 @@ public class TitleScreenMixin {
     private static boolean firstRenderCompleted = false;
 
     @Inject(method = "render", at = @At("HEAD"))
-    private void onFirstRender(MatrixStack matrices, int mouseX, int mouseY, float delta, CallbackInfo ci) {
+    private void onFirstRender(DrawContext context, int mouseX, int mouseY, float delta, CallbackInfo ci) {
         if (firstRenderCompleted) return;
         firstRenderCompleted = true;
 

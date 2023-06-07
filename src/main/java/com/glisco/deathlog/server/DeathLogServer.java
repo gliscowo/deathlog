@@ -73,16 +73,18 @@ public class DeathLogServer implements DedicatedServerModInitializer {
             var leftText = deathInfo.getLeftColumnText().iterator();
             var rightText = deathInfo.getRightColumnText().iterator();
 
-            context.getSource().sendFeedback(Text.literal(""), false);
-            context.getSource().sendFeedback(Text.literal("§7-- §aBegin §bDeath Info Entry [" + i + "]§7--"), false);
+            int idx = i;
+
+            context.getSource().sendFeedback(() -> Text.literal(""), false);
+            context.getSource().sendFeedback(() -> Text.literal("§7-- §aBegin §bDeath Info Entry [" + idx + "]§7--"), false);
             while (leftText.hasNext()) {
-                context.getSource().sendFeedback(((MutableText) leftText.next()).append(Text.literal(": ")).append(((MutableText) rightText.next()).formatted(Formatting.WHITE)), false);
+                context.getSource().sendFeedback(() -> ((MutableText) leftText.next()).append(Text.literal(": ")).append(((MutableText) rightText.next()).formatted(Formatting.WHITE)), false);
             }
-            context.getSource().sendFeedback(Text.literal("§7-- §cEnd §bDeath Info Entry [" + i + "]§7--"), false);
+            context.getSource().sendFeedback(() -> Text.literal("§7-- §cEnd §bDeath Info Entry [" + idx + "]§7--"), false);
         }
 
-        if (infoListSize > 0) context.getSource().sendFeedback(Text.literal(""), false);
-        context.getSource().sendFeedback(Text.literal("Queried §b" + infoListSize + "§r death info entries for player ").append("§b" + profile.getName()), false);
+        if (infoListSize > 0) context.getSource().sendFeedback(() -> Text.literal(""), false);
+        context.getSource().sendFeedback(() -> Text.literal("Queried §b" + infoListSize + "§r death info entries for player ").append("§b" + profile.getName()), false);
 
         return infoListSize;
     }

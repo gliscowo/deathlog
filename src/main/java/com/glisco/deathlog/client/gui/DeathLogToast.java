@@ -1,6 +1,7 @@
 package com.glisco.deathlog.client.gui;
 
 import com.glisco.deathlog.mixin.SystemToastAccessor;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.toast.SystemToast;
 import net.minecraft.client.toast.Toast;
 import net.minecraft.client.toast.ToastManager;
@@ -15,8 +16,8 @@ public class DeathLogToast extends SystemToast {
     }
 
     @Override
-    public Visibility draw(MatrixStack matrices, ToastManager manager, long startTime) {
-        super.draw(matrices, manager, startTime);
+    public Visibility draw(DrawContext context, ToastManager manager, long startTime) {
+        super.draw(context, manager, startTime);
         return startTime - ((SystemToastAccessor) this).deathlog_getStartTime() < 10000L ? Toast.Visibility.SHOW : Toast.Visibility.HIDE;
     }
 }

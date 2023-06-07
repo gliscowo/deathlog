@@ -1,18 +1,13 @@
 package com.glisco.deathlog.client.gui;
 
-import io.wispforest.owo.ui.container.HorizontalFlowLayout;
-import io.wispforest.owo.ui.core.Animation;
-import io.wispforest.owo.ui.core.Easing;
-import io.wispforest.owo.ui.core.Insets;
-import io.wispforest.owo.ui.core.Sizing;
-import io.wispforest.owo.ui.util.Drawer;
+import io.wispforest.owo.ui.container.FlowLayout;
+import io.wispforest.owo.ui.core.*;
 import io.wispforest.owo.ui.util.UISounds;
 import io.wispforest.owo.util.EventSource;
 import io.wispforest.owo.util.EventStream;
-import net.minecraft.client.util.math.MatrixStack;
 import org.lwjgl.glfw.GLFW;
 
-public class DeathListEntryContainer extends HorizontalFlowLayout {
+public class DeathListEntryContainer extends FlowLayout {
 
     protected final EventStream<OnSelected> selectedEvents = OnSelected.newStream();
     protected final Animation<Insets> slideAnimation;
@@ -21,7 +16,7 @@ public class DeathListEntryContainer extends HorizontalFlowLayout {
     protected boolean selected = false;
 
     public DeathListEntryContainer() {
-        super(Sizing.content(), Sizing.content());
+        super(Sizing.content(), Sizing.content(), Algorithm.HORIZONTAL);
         this.slideAnimation = this.padding.animate(150, Easing.QUADRATIC, this.padding.get().add(0, 0, 5, 0));
     }
 
@@ -30,9 +25,9 @@ public class DeathListEntryContainer extends HorizontalFlowLayout {
     }
 
     @Override
-    public void draw(MatrixStack matrices, int mouseX, int mouseY, float partialTicks, float delta) {
-        super.draw(matrices, mouseX, mouseY, partialTicks, delta);
-        if (this.selected) Drawer.drawRectOutline(matrices, this.x, this.y, this.width, this.height, 0xFFAFAFAF);
+    public void draw(OwoUIDrawContext context, int mouseX, int mouseY, float partialTicks, float delta) {
+        super.draw(context, mouseX, mouseY, partialTicks, delta);
+        if (this.selected) context.drawRectOutline(this.x, this.y, this.width, this.height, 0xFFAFAFAF);
     }
 
     @Override
