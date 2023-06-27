@@ -1,0 +1,59 @@
+{
+  "deathlog.deathinfoproperty.coordinates": "坐标",
+  "deathlog.deathinfoproperty.coordinates.value": [
+    {"index": 0, "color": "red"},
+    " ",
+    {"index": 1, "color": "green"},
+    " ",
+    {"index": 2, "color": "aqua"}
+  ],
+  "deathlog.deathinfoproperty.dimension": "维度",
+  "deathlog.deathinfoproperty.location.singleplayer": "单人游戏",
+  "deathlog.deathinfoproperty.location.multiplayer": "多人游戏",
+  "deathlog.deathinfoproperty.location": "位置",
+  "deathlog.deathinfoproperty.location.value": [
+    {"index": 0},
+    {"text": " (", "color": "gray"},
+    {"index": 1, "color": "gray"},
+    {"text": ")", "color": "gray"}
+  ],
+  "deathlog.deathinfoproperty.score": "分数",
+  "deathlog.deathinfoproperty.score.value": [
+    {"index": 0},
+    {"text": " (", "color": "gray"},
+    {"index": 1, "color": "gray"},
+    {"text": " 级, ", "color": "gray"},
+    {"index": 2, "color": "gray"},
+    {"text": " 经验值)", "color": "gray"}
+  ],
+  "deathlog.deathinfoproperty.death_message": "死亡原因",
+  "deathlog.deathinfoproperty.time_of_death": "死亡时间",
+  "deathlog.deathinfoproperty.trinket_component": "饰品",
+  "deathlog.deathinfoproperty.trinket_component.value": [
+    "",
+    {"index": 0, "color": "aqua"},
+    " 物品"
+  ],
+  "key.deathlog.death_screen": "死亡日志界面",
+
+  "text.deathlog.action.restore": "回档",
+  "text.deathlog.action.give_item.spawn": {"text": "按下鼠标中键以生成", "color": "gray"},
+  "text.deathlog.action.give_item.copy_give": {"text": "按下鼠标中键以复制物品并给予玩家", "color": "gray"},
+  "text.deathlog.action.delete": {"text": "删除", "color": "red"},
+
+  "text.deathlog.info.time_missing": "时间缺失",
+  "text.deathlog.info.death_message_missing": "死亡原因缺失",
+
+  "text.deathlog.death_list_title": "死亡日志 - 总数 %s",
+  "text.deathlog.death_info_loading": "加载中...",
+  "text.deathlog.no_info_selected_hint": "请先从左侧的列表中\n选择一个死亡信息",
+
+  "text.deathlog.config": "⇄ 配置界面",
+  "text.config.deathlog.title": "死亡日志 配置界面",
+  "text.config.deathlog.option.screenshotsEnabled": "在死亡时截图",
+  "text.config.deathlog.option.useLegacyDeathDetection": "使用老版本的死亡检测",
+  "text.config.deathlog.option.useLegacyDeathDetection.tooltip": [
+    "使用一种较为敏感但不可靠的的方式检测死亡\n",
+    "该方法能够兼容ViaFabric Mod"
+  ]
+}
