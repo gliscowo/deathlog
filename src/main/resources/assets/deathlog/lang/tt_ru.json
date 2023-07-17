@@ -1,4 +1,5 @@
 {
+  "modmenu.descriptionTranslation.deathlog": "Сезнең күп уңайсыз үлемнәрне күзәтә",
   "deathlog.deathinfoproperty.coordinates": "Координаталар",
   "deathlog.deathinfoproperty.coordinates.value": [
     {"index": 0, "color": "red"},
@@ -28,7 +29,7 @@
   ],
   "deathlog.deathinfoproperty.death_message": "Үлем хәбәре",
   "deathlog.deathinfoproperty.time_of_death": "Үлем вакыты",
-  "deathlog.deathinfoproperty.trinket_component": "Аксессуар",
+  "deathlog.deathinfoproperty.trinket_component": "Аксессуарлар",
   "deathlog.deathinfoproperty.trinket_component.value": [
     "",
     {"index": 0, "color": "aqua"},
@@ -37,8 +38,8 @@
   "key.deathlog.death_screen": "Үлем журналының экраны",
 
   "text.deathlog.action.restore": "Тергезү",
-  "text.deathlog.action.give_item.spawn": {"text": "Чакыру өчен Тычкан 3 басыгыз", "color": "gray"},
-  "text.deathlog.action.give_item.copy_give": {"text": "/give күчереп алу өчен Тычкан 3 басыгыз", "color": "gray"},
+  "text.deathlog.action.give_item.spawn": {"text": "Чакыру өчен тычканның урта төймәсенә басыгыз", "color": "gray"},
+  "text.deathlog.action.give_item.copy_give": {"text": "/give күчереп алу өчен тычканның урта төймәсенә басыгыз", "color": "gray"},
   "text.deathlog.action.delete": {"text": "Бетерү", "color": "red"},
 
   "text.deathlog.info.time_missing": "Вакыт югалтылды",
