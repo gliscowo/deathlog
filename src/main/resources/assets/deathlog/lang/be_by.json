@@ -1,0 +1,60 @@
+{
+  "deathlog.deathinfoproperty.coordinates": "Каардынаты",
+  "deathlog.deathinfoproperty.coordinates.value": [
+    {"index": 0, "color": "red"},
+    " ",
+    {"index": 1, "color": "green"},
+    " ",
+    {"index": 2, "color": "aqua"}
+  ],
+  "deathlog.deathinfoproperty.dimension": "Вымярэнне",
+  "deathlog.deathinfoproperty.location.singleplayer": "Адзіночная гульня",
+  "deathlog.deathinfoproperty.location.multiplayer": "Сумесная гульня",
+  "deathlog.deathinfoproperty.location": "Лакацыя",
+  "deathlog.deathinfoproperty.location.value": [
+    {"index": 0},
+    {"text": " (", "color": "gray"},
+    {"index": 1, "color": "gray"},
+    {"text": ")", "color": "gray"}
+  ],
+  "deathlog.deathinfoproperty.score": "Лік",
+  "deathlog.deathinfoproperty.score.value": [
+    {"index": 0},
+    {"text": " (", "color": "gray"},
+    {"index": 1, "color": "gray"},
+    {"text": " levels, ", "color": "gray"},
+    {"index": 2, "color": "gray"},
+    {"text": " xp)", "color": "gray"}
+  ],
+  "deathlog.deathinfoproperty.death_message": "Паведамленне пра смерць",
+  "deathlog.deathinfoproperty.time_of_death": "Час смерці",
+  "deathlog.deathinfoproperty.trinket_component": "Цацанкі",
+  "deathlog.deathinfoproperty.trinket_component.value": [
+    "",
+    {"index": 0, "color": "aqua"},
+    " items"
+  ],
+  "key.deathlog.death_screen": "Экран Death Log",
+
+  "text.deathlog.action.restore": "Аднавіць",
+  "text.deathlog.action.give_item.spawn": {"text": "Націсніце Mouse 3 каб напісаць spawn", "color": "gray"},
+  "text.deathlog.action.give_item.copy_give": {"text": "Націсніце Mouse 3 каб скапіяваць /give", "color": "gray"},
+  "text.deathlog.action.delete": {"text": "Выдаліць", "color": "red"},
+
+  "text.deathlog.info.time_missing": "Час адсутнічае",
+  "text.deathlog.info.death_message_missing": "Паведамленне пра смерць адсутнічае",
+
+  "text.deathlog.death_list_title": "DeathLog - %s усяго",
+  "text.deathlog.death_info_loading": "Загрузка...",
+  "text.deathlog.no_info_selected_hint": "Абярыце смерць\nз спіса, каб пачаць",
+
+  "text.deathlog.config": "⇄ Налады",
+  "text.config.deathlog.title": "Налады DeathLog",
+  "text.config.deathlog.option.screenshotsEnabled": "Скрыншот смерці",
+  "text.config.deathlog.option.useLegacyDeathDetection": "Выкарыстоўваць стары метад вызначэння смерці",
+  "text.config.deathlog.option.useLegacyDeathDetection.tooltip": [
+    "Выкарыстоўвае меньш актуальны, але больш адчувальны\n",
+    "метад, які выяўляе смерці\n",
+    "з пратаколамі перакладу як ViaFabric"
+  ]
+}
