@@ -124,7 +124,8 @@ public class DeathLogScreen extends BaseUIModelScreen<FlowLayout> {
                                 container.x() - root.padding().get().left() + mouseX,
                                 container.y() - root.padding().get().top() + mouseY,
                                 dropdown -> {
-                                    dropdown.surface(Surface.flat(0xBB000000).and(Surface.outline(0xA75F5F5F)));
+                                    dropdown.surface(Surface.blur(3, 5).and(Surface.flat(0xC7000000)).and(Surface.outline(0xFF121212)));
+                                    dropdown.zIndex(100);
 
                                     if (this.canRestore) {
                                         dropdown.button(Text.translatable("text.deathlog.action.restore"), dropdown_ -> {

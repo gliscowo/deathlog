@@ -1,5 +1,5 @@
 plugins {
-    id 'fabric-loom' version '0.12-SNAPSHOT'
+    id 'fabric-loom' version '1.4-SNAPSHOT'
     id 'maven-publish'
     id 'io.github.juuxel.loom-quiltflower' version '1.7.1'
 }
@@ -9,7 +9,7 @@ group = project.maven_group
 
 repositories {
     maven { url = "https://maven.terraformersmc.com/" }
-    maven { url = "https://ladysnake.jfrog.io/artifactory/mods" }
+    maven { url = "https://maven.ladysnake.org/releases" }
     maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
     maven { url "https://maven.wispforest.io/" }
 }
@@ -24,12 +24,15 @@ dependencies {
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
     modImplementation "dev.emi:trinkets:${project.trinkets_version}"
+    modImplementation "dev.onyxstudios.cardinal-components-api:cardinal-components-base:${project.cca_version}"
+    modImplementation "dev.onyxstudios.cardinal-components-api:cardinal-components-entity:${project.cca_version}"
+
     modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
 
     modImplementation annotationProcessor ("io.wispforest:owo-lib:${project.owo_version}")
     include "io.wispforest:owo-sentinel:${project.owo_version}"
 
-    modCompileOnly 'me.lucko:fabric-permissions-api:0.1-SNAPSHOT'
+    modCompileOnly 'me.lucko:fabric-permissions-api:0.2-SNAPSHOT'
 }
 
 processResources {
