@@ -11,7 +11,7 @@ repositories {
     maven { url = "https://maven.terraformersmc.com/" }
     maven { url = "https://maven.ladysnake.org/releases" }
     maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
-    maven { url "https://maven.wispforest.io/" }
+    maven { url "https://maven.wispforest.io/releases" }
 }
 
 dependencies {

@@ -27,8 +27,8 @@ public class TitleScreenMixin {
 
         final var storage = DeathLogClient.getClientStorage();
         if (!storage.isErrored()) return;
-        MinecraftClient.getInstance().getToastManager().add(new DeathLogToast(SystemToast.Type.TUTORIAL_HINT, Text.of("DeathLog Database Error"), Text.of(storage.getErrorCondition())));
-        MinecraftClient.getInstance().getToastManager().add(new DeathLogToast(SystemToast.Type.TUTORIAL_HINT, Text.of("DeathLog Problem"), Text.of("Check your log for details")));
+        MinecraftClient.getInstance().getToastManager().add(new DeathLogToast(SystemToast.Type.PACK_LOAD_FAILURE, Text.of("DeathLog Database Error"), Text.of(storage.getErrorCondition())));
+        MinecraftClient.getInstance().getToastManager().add(new DeathLogToast(SystemToast.Type.PACK_LOAD_FAILURE, Text.of("DeathLog Problem"), Text.of("Check your log for details")));
     }
 
 }

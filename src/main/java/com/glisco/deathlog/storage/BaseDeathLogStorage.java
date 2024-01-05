@@ -37,7 +37,7 @@ public abstract class BaseDeathLogStorage implements DeathLogStorage {
 
             if (file.exists()) {
                 try {
-                    deathNbt = NbtIo.read(file);
+                    deathNbt = NbtIo.read(file.toPath());
 
                     if (deathNbt.getInt("FormatRevision") != FORMAT_REVISION) {
                         raiseError("Incompatible format");
@@ -89,7 +89,7 @@ public abstract class BaseDeathLogStorage implements DeathLogStorage {
             deathNbt.putInt("FormatRevision", FORMAT_REVISION);
 
             try {
-                NbtIo.write(deathNbt, file);
+                NbtIo.write(deathNbt, file.toPath());
             } catch (IOException e) {
                 e.printStackTrace();
                 LOGGER.error("Failed to save DeathLog database");
