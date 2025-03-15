@@ -97,10 +97,12 @@
                             </children>
 
                             <sizing>
+                                <horizontal method="fill">60</horizontal>
                                 <vertical method="fill">100</vertical>
                             </sizing>
 
                             <vertical-alignment>center</vertical-alignment>
+                            <horizontal-alignment>center</horizontal-alignment>                                
                         </flow-layout>
                     </children>
 
@@ -142,7 +144,13 @@
                                 <text>{{death-time}}</text>
                                 <cursor-style>hand</cursor-style>
                             </label>
-
+                                
+                            <flow-layout direction="vertical">
+                                <sizing>
+                                    <vertical method="fixed">3</vertical> <!-- Adjust height for the gap -->
+                                </sizing>
+                            </flow-layout>
+                                
                             <label>
                                 <text>{{death-message}}</text>
                                 <cursor-style>hand</cursor-style>
