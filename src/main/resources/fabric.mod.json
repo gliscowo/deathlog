@@ -32,11 +32,11 @@
   "depends": {
     "fabricloader": "*",
     "fabric": "*",
-    "minecraft": ">=1.20.3",
-    "owo-lib": ">=0.9.3"
+    "minecraft": ">=1.21.6",
+    "owo-lib": ">=0.12.21"
   },
   "suggests": {
-    "trinkets": ">=3.4.0"
+    "trinkets": ">=3.10.0"
   },
   "custom": {
     "modmenu": {

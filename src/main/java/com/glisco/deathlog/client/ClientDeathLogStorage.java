@@ -61,6 +61,11 @@ public class ClientDeathLogStorage extends BaseDeathLogStorage implements Direct
     public void store(Text deathMessage, PlayerEntity player) {
         final DeathInfo deathInfo = new DeathInfo();
         final MinecraftClient client = MinecraftClient.getInstance();
+        // Update to fix crashing if use replay mod
+        if (client == null || client.world == null || player == null) {
+            LOGGER.warn("Client, world or player are null, skip death log entry");
+            return;
+        }
 
         deathInfo.setProperty(DeathInfo.INVENTORY_KEY, new InventoryProperty(player.getInventory()));
 
@@ -86,6 +91,12 @@ public class ClientDeathLogStorage extends BaseDeathLogStorage implements Direct
 
     @Override
     public void restore(int index, @Nullable UUID profile) {
+        MinecraftClient client = MinecraftClient.getInstance();
+        // Update to fix crashing if use replay mod
+        if (client == null || client.player == null) {
+            LOGGER.warn("Minecraft client or player is null, skipping restore request, DEV MESSAGE, IGNORE THIS");
+            return;
+        }
         DeathLogPackets.CHANNEL.clientHandle().send(new DeathLogPackets.RestoreRequest(
                 MinecraftClient.getInstance().player.getUuid(),
                 index

@@ -1,8 +1,13 @@
 package com.glisco.deathlog.client.gui;
 
+import com.glisco.deathlog.DeathLogCommon;
 import com.glisco.deathlog.client.DeathInfo;
+import com.glisco.deathlog.client.DeathLogClient;
+import com.glisco.deathlog.client.DeathLogConfig;
 import com.glisco.deathlog.network.RemoteDeathLogStorage;
 import com.glisco.deathlog.storage.DirectDeathLogStorage;
+import io.wispforest.owo.config.ConfigWrapper;
+import com.glisco.deathlog.DeathLogCommon;
 import io.wispforest.owo.config.ui.ConfigScreen;
 import io.wispforest.owo.ui.base.BaseUIModelScreen;
 import io.wispforest.owo.ui.component.*;
@@ -77,7 +82,7 @@ public class DeathLogScreen extends BaseUIModelScreen<FlowLayout> {
         });
 
         rootComponent.childById(ButtonComponent.class, "config-button").onPress(button -> {
-            this.client.setScreen(ConfigScreen.getProvider("deathlog").apply(this));
+            this.client.setScreen(ConfigScreen.create(DeathLogClient.CONFIG, this));
         });
 
         this.uiAdapter.rootComponent.childById(LabelComponent.class, "death-count-label").text(

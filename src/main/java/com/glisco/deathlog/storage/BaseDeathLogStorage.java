@@ -50,7 +50,7 @@ public abstract class BaseDeathLogStorage implements DeathLogStorage {
                 try {
                     deathNbt = NbtIo.read(file.toPath());
 
-                    if (deathNbt.getInt("FormatRevision") != FORMAT_REVISION) {
+                    if (deathNbt.getInt("FormatRevision").orElse(0) != FORMAT_REVISION) {
                         raiseError("Incompatible format");
 
                         LOGGER.error("Incompatible DeathLog database format detected. Database not loaded and further disk operations disabled");
@@ -72,14 +72,12 @@ public abstract class BaseDeathLogStorage implements DeathLogStorage {
             }
 
             final var list = new ArrayList<DeathInfo>();
-            final NbtList infoList = deathNbt.getList("Deaths", NbtElement.COMPOUND_TYPE);
+            final NbtList infoList = deathNbt.getList("Deaths").orElse(new NbtList());
             try {
-                for (int i = 0; i < infoList.size(); i++) {
-                    list.add(DeathInfo.ENDEC.decodeFully(
-                            SerializationContext.attributes(RegistriesAttribute.of(registries)),
-                            NbtDeserializer::of,
-                            infoList.getCompound(i)
-                    ));
+                for (NbtElement element : infoList) {
+                    if (element instanceof NbtCompound compound) {
+                        list.add(DeathInfo.ENDEC.decodeFully(SerializationContext.empty(), NbtDeserializer::of, compound));
+                    }
                 }
             } catch (Exception e) {
                 LOGGER.error("Failed to decode death info", e);

@@ -2,6 +2,7 @@ package com.glisco.deathlog.client;
 
 import com.glisco.deathlog.DeathLogCommon;
 import com.glisco.deathlog.client.gui.DeathLogScreen;
+import com.glisco.deathlog.client.DeathLogConfig;
 import com.glisco.deathlog.network.DeathLogPackets;
 import com.glisco.deathlog.storage.DirectDeathLogStorage;
 import net.fabricmc.api.ClientModInitializer;
@@ -18,11 +19,15 @@ import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.text.Text;
 import org.lwjgl.glfw.GLFW;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @Environment(EnvType.CLIENT)
 public class DeathLogClient implements ClientModInitializer {
 
-    public static final com.glisco.deathlog.client.DeathLogConfig CONFIG = com.glisco.deathlog.client.DeathLogConfig.createAndLoad();
+    public static final Logger LOGGER = LogManager.getLogger("DeathLog");
+
+    public static final DeathLogConfig CONFIG = DeathLogConfig.createAndLoad();
 
     public static final KeyBinding OPEN_DEATH_SCREEN = new KeyBinding("key.deathlog.death_screen", GLFW.GLFW_KEY_END, "key.categories.misc");
     private static ClientDeathLogStorage storage;

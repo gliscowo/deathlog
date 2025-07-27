@@ -25,34 +25,61 @@ public abstract class ClientPlayNetworkHandlerMixin extends ClientCommonNetworkH
     protected ClientPlayNetworkHandlerMixin(MinecraftClient client, ClientConnection connection, ClientConnectionState connectionState) {
         super(client, connection, connectionState);
     }
-
+    // Update to fix crashing if use replay mod
     @SuppressWarnings("ConstantConditions")
     @Inject(method = "onDeathMessage", at = @At("HEAD"))
     private void onClientDeath(DeathMessageS2CPacket packet, CallbackInfo ci) {
         if (!RenderSystem.isOnRenderThread()) return;
-        DeathLogClient.getClientStorage().store(packet.message(), this.client.player);
-
-        if (DeathLogClient.CONFIG.screenshotsEnabled()) {
-            ScreenshotRecorder.saveScreenshot(FabricLoader.getInstance().getGameDir().toFile(), this.client.getFramebuffer(), text -> {
-                text = Text.literal("§7[§bDeathLog§7] ").append(((MutableText) text).formatted(Formatting.GRAY));
-                this.client.player.sendMessage(text, false);
-            });
+        if (this.client == null || this.client.player == null || DeathLogClient.getClientStorage() == null) {
+            DeathLogClient.LOGGER.warn("Client, player, or death log storage is null, skipping log entry");
+            return;
         }
-    }
+        this.client.execute(() -> {
+            if (this.client.player == null || DeathLogClient.getClientStorage() == null) {
+                DeathLogClient.LOGGER.warn("Player or death log storage is null in deferred execution, skipping log entry");
+                return;
+            }
+            DeathLogClient.getClientStorage().store(packet.message(), this.client.player);
 
+            if (DeathLogClient.CONFIG.screenshotsEnabled()) {
+                ScreenshotRecorder.saveScreenshot(FabricLoader.getInstance().getGameDir().toFile(), this.client.getFramebuffer(), text -> {
+                    text = Text.literal("§7[§bDeathLog§7] ").append(((MutableText) text).formatted(Formatting.GRAY));
+                    if (this.client.player != null) {
+                        this.client.player.sendMessage(text, false);
+                    } else {
+                        DeathLogClient.LOGGER.warn("Player is null, skipping screenshot message");
+                    }
+                });
+            }
+        });
+    }
+    // Update to fix crashing if use replay mod
     @Inject(method = "onHealthUpdate", at = @At("HEAD"))
     private void onLegacyClientDeath(HealthUpdateS2CPacket packet, CallbackInfo ci) {
         if (!DeathLogClient.CONFIG.useLegacyDeathDetection() || !RenderSystem.isOnRenderThread()) return;
-        if (packet.getHealth() > 0 || this.client.player.isDead()) return;
-
-        DeathLogClient.getClientStorage().store(Text.empty(), this.client.player);
-
-        if (DeathLogClient.CONFIG.screenshotsEnabled()) {
-            ScreenshotRecorder.saveScreenshot(FabricLoader.getInstance().getGameDir().toFile(), this.client.getFramebuffer(), text -> {
-                text = Text.literal("§7[§bDeathLog§7] ").append(((MutableText) text).formatted(Formatting.GRAY));
-                this.client.player.sendMessage(text, false);
-            });
+        if (packet.getHealth() > 0 || this.client == null || this.client.player == null || this.client.player.isDead()) return;
+        if (DeathLogClient.getClientStorage() == null) {
+            DeathLogClient.LOGGER.warn("Death log storage is null, skipping log entry");
+            return;
         }
-    }
 
+        this.client.execute(() -> {
+            if (this.client.player == null || DeathLogClient.getClientStorage() == null) {
+                DeathLogClient.LOGGER.warn("Player or death log storage is null in deferred execution, skipping log entry");
+                return;
+            }
+            DeathLogClient.getClientStorage().store(Text.empty(), this.client.player);
+
+            if (DeathLogClient.CONFIG.screenshotsEnabled()) {
+                ScreenshotRecorder.saveScreenshot(FabricLoader.getInstance().getGameDir().toFile(), this.client.getFramebuffer(), text -> {
+                    text = Text.literal("§7[§bDeathLog§7] ").append(((MutableText) text).formatted(Formatting.GRAY));
+                    if (this.client.player != null) {
+                        this.client.player.sendMessage(text, false);
+                    } else {
+                        DeathLogClient.LOGGER.warn("Player is null, skipping screenshot message");
+                    }
+                });
+            }
+        });
+    }
 }

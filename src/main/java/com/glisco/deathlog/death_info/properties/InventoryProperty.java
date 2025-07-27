@@ -35,10 +35,15 @@ public class InventoryProperty implements RestorableDeathInfoProperty {
         this.playerItems = DefaultedList.ofSize(37, ItemStack.EMPTY);
         this.playerArmor = DefaultedList.ofSize(4, ItemStack.EMPTY);
 
-        copy(playerInventory.armor, playerArmor);
-        copy(playerInventory.main, playerItems);
+        for (int i = 0; i < 4; i++) {
+            playerArmor.set(i, playerInventory.getStack(36 + i).copy());
+        }
 
-        playerItems.set(36, playerInventory.offHand.get(0).copy());
+        for (int i = 0; i < 36; i++) {
+            playerItems.set(i, playerInventory.getStack(i).copy());
+        }
+
+        playerItems.set(36, playerInventory.player.getOffHandStack().copy());
     }
 
     @Override
@@ -66,10 +71,14 @@ public class InventoryProperty implements RestorableDeathInfoProperty {
         final var inventory = player.getInventory();
         inventory.clear();
 
-        copy(playerArmor, inventory.armor);
-        copy(playerItems, inventory.main, 36);
+        for (int i = 0; i < 4; i++) {
+            inventory.setStack(36 + i, playerArmor.get(i).copy());
+        }
+        for (int i = 0; i < 36; i++) {
+            inventory.setStack(i, playerItems.get(i).copy());
+        }
 
-        inventory.offHand.set(0, playerItems.get(36));
+        inventory.setStack(40, playerItems.get(36).copy());
     }
 
     public DefaultedList<ItemStack> getPlayerArmor() {
